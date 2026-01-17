@@ -1,0 +1,16 @@
+#!/bin/bash
+AI_DIR="$HOME/Developer/ai"
+
+echo "# SYSTEM CONTEXT"
+echo ""
+echo "## MANIFESTO"
+cat "$AI_DIR/MANIFESTO.md"
+echo ""
+echo "## AGENTS"
+cat "$AI_DIR/AGENTS.md"
+echo ""
+echo "## MEMORY PROTOCOL"
+echo "Read .ai/MEMORY.md in the project root."
+echo ""
+echo "## SKILLS"
+echo "Check specialized skills in '$AI_DIR/skills/'."
