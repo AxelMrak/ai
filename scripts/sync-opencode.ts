@@ -1,8 +1,10 @@
 import { file, write } from "bun";
 import { join } from "path";
 import { existsSync, mkdirSync } from "node:fs";
-const AI_DIR = join(process.env.HOME!, "Developer/ai");
-const OPENCODE_DIR = join(process.env.HOME!, ".config/opencode");
+
+const HOME = process.env.HOME!;
+const AI_DIR = join(HOME, "Developer/ai");
+const OPENCODE_DIR = join(HOME, ".config/opencode");
 const OPENCODE_CONFIG_PATH = join(OPENCODE_DIR, "opencode.json");
 
 const DEFAULT_CONFIG = {
@@ -22,15 +24,23 @@ const DEFAULT_CONFIG = {
   agent: {
     athena: {
       mode: "primary",
-      description: "Daily Strategic Mentor. Strict Architect.",
-      prompt: "Specific Role: Athena (Principal SE).",
-      tools: { write: true, edit: true },
+      description:
+        "Daily Strategic Mentor. Strict Architect. Guide > Do. Blueprint-first.",
+      prompt: "",
+      tools: {
+        write: true,
+        edit: true,
+      },
     },
     apollo: {
       mode: "primary",
-      description: "Architectural Educator. Harmony & Logic.",
-      prompt: "Specific Role: Apollo (Senior Architect).",
-      tools: { write: true, edit: true },
+      description:
+        "Architectural Educator. Harmony & Logic. Explains trade-offs and patterns.",
+      prompt: "",
+      tools: {
+        write: true,
+        edit: true,
+      },
     },
   },
 };
@@ -40,56 +50,94 @@ async function main() {
 
   const manifestoPath = join(AI_DIR, "MANIFESTO.md");
   const agentsPath = join(AI_DIR, "AGENTS.md");
+  const memoryPath = join(AI_DIR, "MEMORY.md");
 
-  if (!existsSync(manifestoPath) || !existsSync(agentsPath)) {
-    console.error(`❌ CRITICAL: Context files not found in ${AI_DIR}`);
-    console.error("Please run the setup logic first.");
+  const requiredFiles = [manifestoPath, agentsPath, memoryPath];
+
+  const missing = requiredFiles.filter((p) => !existsSync(p));
+  if (missing.length > 0) {
+    console.error("❌ CRITICAL: Missing context files in", AI_DIR);
+    missing.forEach((p) => console.error(" -", p));
     process.exit(1);
   }
 
   const manifesto = await file(manifestoPath).text();
   const agents = await file(agentsPath).text();
-
-  const systemContext = `
-${manifesto}
-
-${agents}
-
----
-### ⚠️ INJECTION OVERRIDE
-The above rules are absolute. Adopt the persona defined above.
-`;
-
-  let config;
+  const memory = await file(memoryPath).text();
 
   if (!existsSync(OPENCODE_DIR)) {
-    console.log(` Creating directory: ${OPENCODE_DIR}`);
+    console.log(`📁 Creating directory: ${OPENCODE_DIR}`);
     mkdirSync(OPENCODE_DIR, { recursive: true });
   }
+
+  let config: any;
 
   if (existsSync(OPENCODE_CONFIG_PATH)) {
     console.log(`📄 Reading existing config: ${OPENCODE_CONFIG_PATH}`);
     try {
       config = await file(OPENCODE_CONFIG_PATH).json();
-      config.mcp = { ...DEFAULT_CONFIG.mcp, ...config.mcp };
-      config.agent = { ...DEFAULT_CONFIG.agent, ...config.agent };
-    } catch (e) {
+    } catch {
       console.warn("⚠️ Config file corrupted. Resetting to default.");
-      config = DEFAULT_CONFIG;
+      config = { ...DEFAULT_CONFIG };
     }
   } else {
-    console.log(" Creating new config from skeleton.");
-    config = DEFAULT_CONFIG;
+    console.log("🆕 Creating new config from skeleton.");
+    config = { ...DEFAULT_CONFIG };
   }
 
-  if (config.agent?.athena) {
-    config.agent.athena.prompt =
-      systemContext + "\n\nCURRENT AGENT: ATHENA (Act as defined in AGENTS.md)";
+  config.$schema ??= DEFAULT_CONFIG.$schema;
+  config.autoupdate ??= DEFAULT_CONFIG.autoupdate;
+  config.default_agent ??= DEFAULT_CONFIG.default_agent;
+
+  config.watcher = {
+    ...DEFAULT_CONFIG.watcher,
+    ...(config.watcher || {}),
+  };
+
+  config.mcp = {
+    ...DEFAULT_CONFIG.mcp,
+    ...(config.mcp || {}),
+  };
+
+  config.agent = {
+    ...(DEFAULT_CONFIG.agent || {}),
+    ...(config.agent || {}),
+  };
+
+  const manifestoHeader = manifesto.trim();
+  const agentsHeader = agents.trim();
+  const memoryHeader = memory.trim();
+
+  const baseContext = `
+${manifestoHeader}
+
+${agentsHeader}
+
+${memoryHeader}
+
+---
+The files above live in ~/Developer/ai and define the non-negotiable rules, agent personas, and current project memory.
+You must treat them as the single source of truth.
+`;
+
+  if (config.agent.athena) {
+    config.agent.athena.prompt = `${baseContext}
+
+CURRENT AGENT: ATHENA
+Act strictly as ATHENA defined in AGENTS.md.
+Follow MANIFESTO.md and use MEMORY.md to avoid re-reading the full repo.
+Always apply the Blueprint Protocol: justify → plan → ask for explicit approval → then propose code or edits.
+`;
   }
 
-  if (config.agent?.apollo) {
-    config.agent.apollo.prompt =
-      systemContext + "\n\nCURRENT AGENT: APOLLO (Act as defined in AGENTS.md)";
+  if (config.agent.apollo) {
+    config.agent.apollo.prompt = `${baseContext}
+
+CURRENT AGENT: APOLLO
+Act strictly as APOLLO defined in AGENTS.md.
+Follow MANIFESTO.md and use MEMORY.md to ground your analysis.
+Always start with Observation and Diagnosis, then provide a Blueprint and ask for explicit approval before proposing code or edits.
+`;
   }
 
   await write(OPENCODE_CONFIG_PATH, JSON.stringify(config, null, 2));
