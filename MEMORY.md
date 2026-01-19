@@ -1,51 +1,184 @@
 # 🧠 PROJECT MEMORY & CONTEXT
 
-> **SYSTEM INSTRUCTION:** Read this file at the start of every session.
-> **TOKEN ECONOMY:** Use this file to understand the project state without reading the entire codebase.
+> SYSTEM INSTRUCTION: Read this file at the start of every session.
+> PURPOSE: High-signal project cache so the agent does not need to scan the full repo on every query.
+
+---
 
 ## 📍 Meta-Data
 
-- **Project Name:** [Project Name]
-- **Stack:** [e.g., Next.js , Bun, Tailwind, PostgreSQL]
-- **Last Update:** [Date]
-- **Current Phase:** [e.g., MVP / Refactoring / Scaling]
+- Project Name: [Project Name]
+- Stack: [e.g., Next.js, Bun, Tailwind, PostgreSQL]
+- Last Update: [YYYY-MM-DD]
+- Current Phase: [MVP / Refactoring / Scaling]
+- Context Version: v[major.minor.patch]
+
+### Versioning Rules
+
+- Patch: Small clarifications (notes, typos), no behavioral change.
+- Minor: New sections, new conventions, new ADRs.
+- Major: Changes to architecture principles, agent protocol, or folder layout.
+
+---
 
 ## 🎯 Active Focus (What we are doing NOW)
 
-> _Focus only on this context. Ignore unrelated files._
+> Work only within this focus unless the user explicitly changes it.
 
-- **Current Goal:** [e.g., Implement Auth Flow with JWT]
-- **Next Step:** [e.g., Create route protection middleware]
-- **User Constraint:** [e.g., "Do not use external validation libs, keep it manual"]
+- Current Goal: [e.g., Implement Auth Flow with JWT]
+- Next Step: [e.g., Create route protection middleware]
+- User Constraints:
+  - [e.g., Do not use external validation libs, keep it manual]
+  - [e.g., Do not change database schema during this iteration]
+- Non-Goals (for now):
+  - [e.g., Do not touch billing until auth is stabilized]
 
-## 🗺️ State of the Union (Architecture Cache)
+Agent rules:
 
-_Legend: ✅ Stable (Do not read) | 🚧 Volatile (Read carefully) | ❌ Broken_
+- If a user request conflicts with this focus, ask for confirmation before planning.
+- If the focus is empty or outdated, ask the user to redefine it.
 
-| Module / Feature    | Status      | Path              | Notes                      |
-| :------------------ | :---------- | :---------------- | :------------------------- |
-| **UI Components**   | ✅ Stable   | `components/ui/`  | Shadcn-like. Atomic.       |
-| **Auth Feature**    | 🚧 WIP      | `features/auth/`  | Missing Password Reset.    |
-| **Database Schema** | ✅ Stable   | `infra/db/schema` | Users & Posts tables.      |
-| **API Routes**      | ❌ Refactor | `app/api/`        | Move logic to Controllers. |
+---
+
+## 🗺️ Architecture Snapshot (State of the Union)
+
+Legend: ✅ Stable | 🚧 Volatile | ❌ Broken/Refactor
+
+| Module / Feature | Status      | Path              | Notes                                  |
+| :--------------- | :---------- | :---------------- | :------------------------------------- |
+| UI Components    | ✅ Stable   | `components/ui/`  | Shadcn-like, atomic, reusable.         |
+| Auth Feature     | 🚧 WIP      | `features/auth/`  | Missing password reset.                |
+| Database Schema  | ✅ Stable   | `infra/db/schema` | Users & Posts tables, normalized.      |
+| API Routes       | ❌ Refactor | `app/api/`        | Move logic to Controllers / Use Cases. |
+
+Agent rules:
+
+- Read volatile (🚧) and broken (❌) modules first when planning changes.
+- Do not propose changes to stable (✅) modules without a clear, stated benefit.
+
+---
 
 ## 📐 Architecture Decision Records (ADR - Lite)
 
-> _Why did we do this? (Prevent loops)_
+> Always check these before proposing patterns or libraries.
 
-- **[ADR-001] State Management:** Used **Zustand** because Redux was overkill for this dashboard.
-- **[ADR-002] CSS:** Used pure **Tailwind**. `@apply` is forbidden except in `globals.css`.
-- **[ADR-003] Fetching:** Used **TanStack Query** on client, native `fetch` on server.
+- ADR-001 – State Management
+  Zustand chosen instead of Redux due to lower complexity and overhead for this dashboard.
 
-## 💣 Tech Debt & "Athena's Hitlist"
+- ADR-002 – CSS
+  Tailwind only. `@apply` allowed only in `globals.css` for design tokens and primitives.
 
-> _Things strictly forbidden or pending refactor._
+- ADR-003 – Data Fetching
+  TanStack Query on the client; native `fetch` on the server.
 
-- [ ] The `UserDashboard` component is a God Component (>300 lines). **SPLIT IT.**
-- [ ] Hardcoded strings found in `features/billing`. Move to `constants.ts`.
-- [ ] Missing integration tests for the payment flow.
+Proposals that conflict with an ADR must:
 
-## 📝 User Preferences (Project Specific)
+1. Name the ADR that would be affected.
+2. Explain the trade-offs.
+3. Ask the user whether to:
+   - Keep the ADR and adapt the solution, or
+   - Amend / deprecate the ADR.
 
-- [e.g., In this project, strict mode is disabled for the legacy module]
-- [e.g., All dates must be handled in UTC]
+---
+
+## 💣 Tech Debt & Hitlist
+
+> Known issues that are allowed (and encouraged) to be refactored.
+
+- [ ] `UserDashboard` is a God Component (>300 lines). Split into smaller containers, views, and hooks.
+- [ ] Hardcoded strings in `features/billing`. Move to `constants.ts`.
+- [ ] Missing integration tests for payment flow.
+
+Agent behavior:
+
+- When the user requests work in an area that has tech debt:
+  - Explain the risks of building on top of the current shape.
+  - Offer two paths: (a) minimal targeted refactor first, (b) conscious quick patch.
+
+---
+
+## 📝 Project-Specific Preferences
+
+- React strict mode disabled for legacy modules.
+- All dates must be handled in UTC.
+- The user prefers:
+  - Refactor and architecture plans before code.
+  - Clear theoretical justification of patterns (why A vs B).
+- No autonomous actions:
+  - Do not write files, run commands, or trigger migrations without explicit instruction.
+
+---
+
+## 🔁 Memory & Evolution Protocol
+
+### When to Propose MEMORY.md Updates
+
+The agent should propose MEMORY.md updates (never apply them silently) when:
+
+- A new architecture decision is made or strongly implied.
+- A module status changes (e.g., WIP → Stable, Refactor → Stable).
+- Repeated patterns of tech debt or smells are identified.
+- The current focus clearly changes (e.g., auth done, moving to billing).
+
+For each update:
+
+1. Specify the section (e.g., "Architecture Snapshot", "ADRs").
+2. Provide the proposed new content or diff.
+3. Explain why this update will improve future iterations.
+4. Ask: “Apply this change to MEMORY.md?” and wait for confirmation.
+
+---
+
+## 🪙 Token Economy Modes (Context & Cost Strategy)
+
+> Choose the mode based on the task and be explicit in reasoning.
+
+### Mode A – Minimal Context (Cost-First)
+
+- Use only:
+  - This MEMORY.md
+  - The relevant files for the current module
+  - The latest user message
+- Suitable for:
+  - Small refactors inside a well-known module
+  - Simple questions about existing patterns
+
+### Mode B – Targeted Retrieval (RAG-Style)
+
+- Use project search / embeddings / MCP tools to retrieve:
+  - Only the most relevant snippets (functions, components, schemas).
+- Summarize retrieved context before reasoning.
+- Suitable for:
+  - Non-trivial refactors touching multiple files
+  - Features that reuse existing patterns heavily
+
+### Mode C – Deep Audit (Rare, Expensive)
+
+- Read broader parts of the codebase:
+  - Module-level directories
+  - Related infra (e.g., db schema + use cases + controllers)
+- Only use when:
+  - The user explicitly asks for a “full audit”, or
+  - There is strong evidence that local changes will have cross-cutting impact.
+
+### Context Hygiene Practices
+
+- Prefer:
+  - Summaries over raw code dumps.
+  - Referencing existing patterns by name (“follow the existing auth use-case pattern”) rather than pasting large chunks.
+- If a conversation grows long:
+  - Periodically summarize the state and minimize older details that are no longer relevant.
+
+---
+
+## 🔌 Tools & MCP Usage (High-Level)
+
+- Use tools / MCPs to:
+  - Retrieve specific files, trees, or diffs.
+  - Search codebase by symbol, path, or semantic meaning.
+- Do not:
+  - Execute destructive operations or writes without explicit user confirmation.
+- When proposing tool usage:
+  - State clearly what will be retrieved and why it matters for the solution.
+
+---
