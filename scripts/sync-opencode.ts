@@ -1,11 +1,14 @@
 import { file, write } from "bun";
 import { join } from "path";
-import { existsSync, mkdirSync } from "node:fs";
+import { existsSync } from "node:fs";
+import { mkdir, readdir } from "node:fs/promises";
 
 const HOME = process.env.HOME!;
 const AI_DIR = join(HOME, "Developer/ai");
 const OPENCODE_DIR = join(HOME, ".config/opencode");
 const OPENCODE_CONFIG_PATH = join(OPENCODE_DIR, "opencode.json");
+const OPENCODE_SKILLS_DIR = join(OPENCODE_DIR, "skills");
+const AI_SKILLS_DIR = join(AI_DIR, "skills");
 
 const DEFAULT_CONFIG = {
   $schema: "https://opencode.ai/config.json",
@@ -24,50 +27,36 @@ const DEFAULT_CONFIG = {
   agent: {
     athena: {
       mode: "primary",
-      description:
-        "Daily Strategic Mentor. Strict Architect. Guide > Do. Blueprint-first.",
+      description: "Daily Strategic Mentor. Strict Architect. Guide > Do.",
       prompt: "",
       tools: {
         write: true,
         edit: true,
+        skill: true,
       },
     },
     apollo: {
       mode: "primary",
-      description:
-        "Architectural Educator. Harmony & Logic. Explains trade-offs and patterns.",
+      description: "Architectural Educator. Harmony & Logic.",
       prompt: "",
       tools: {
         write: true,
         edit: true,
+        skill: true,
       },
     },
   },
 };
 
 async function main() {
-  console.log("🔄 Syncing Axel Mrak DNA to OpenCode...");
-
-  const manifestoPath = join(AI_DIR, "MANIFESTO.md");
-  const agentsPath = join(AI_DIR, "AGENTS.md");
-  const memoryPath = join(AI_DIR, "MEMORY.md");
-
-  const requiredFiles = [manifestoPath, agentsPath, memoryPath];
-
-  const missing = requiredFiles.filter((p) => !existsSync(p));
-  if (missing.length > 0) {
-    console.error("❌ CRITICAL: Missing context files in", AI_DIR);
-    missing.forEach((p) => console.error(" -", p));
-    process.exit(1);
-  }
-
-  const manifesto = await file(manifestoPath).text();
-  const agents = await file(agentsPath).text();
-  const memory = await file(memoryPath).text();
+  console.log("🔄 Syncing Axel Mrak DNA to OpenCode (Skills Mode)...");
 
   if (!existsSync(OPENCODE_DIR)) {
-    console.log(`📁 Creating directory: ${OPENCODE_DIR}`);
-    mkdirSync(OPENCODE_DIR, { recursive: true });
+    await mkdir(OPENCODE_DIR, { recursive: true });
+  }
+
+  if (!existsSync(OPENCODE_SKILLS_DIR)) {
+    await mkdir(OPENCODE_SKILLS_DIR, { recursive: true });
   }
 
   let config: any;
@@ -104,44 +93,46 @@ async function main() {
     ...(config.agent || {}),
   };
 
-  const manifestoHeader = manifesto.trim();
-  const agentsHeader = agents.trim();
-  const memoryHeader = memory.trim();
+  config.agent.athena.prompt = `
+You are ATHENA (see AGENTS.md in ~/Developer/ai).
 
-  const baseContext = `
-${manifestoHeader}
+Follow MANIFESTO.md and use MEMORY.md from ~/Developer/ai.
 
-${agentsHeader}
+Available skills in ~/.config/opencode/skills/:
+- Use skill() to load MANIFESTO.md, AGENTS.md, MEMORY.md or project skills (python, react, rules)
 
-${memoryHeader}
-
----
-The files above live in ~/Developer/ai and define the non-negotiable rules, agent personas, and current project memory.
-You must treat them as the single source of truth.
+Always apply Blueprint Protocol and ask "¿Le mando mecha?" before edits.
 `;
 
-  if (config.agent.athena) {
-    config.agent.athena.prompt = `${baseContext}
+  config.agent.apollo.prompt = `
+You are APOLLO (see AGENTS.md in ~/Developer/ai).
 
-CURRENT AGENT: ATHENA
-Act strictly as ATHENA defined in AGENTS.md.
-Follow MANIFESTO.md and use MEMORY.md to avoid re-reading the full repo.
-Always apply the Blueprint Protocol: justify → plan → ask for explicit approval → then propose code or edits.
+Follow MANIFESTO.md and use MEMORY.md from ~/Developer/ai.
+
+Available skills in ~/.config/opencode/skills/:
+- Use skill() to load MANIFESTO.md, AGENTS.md, MEMORY.md or project skills (python, react, rules)
+
+Always start with Observation + Diagnosis, then Blueprint, then ask for approval.
 `;
-  }
-
-  if (config.agent.apollo) {
-    config.agent.apollo.prompt = `${baseContext}
-
-CURRENT AGENT: APOLLO
-Act strictly as APOLLO defined in AGENTS.md.
-Follow MANIFESTO.md and use MEMORY.md to ground your analysis.
-Always start with Observation and Diagnosis, then provide a Blueprint and ask for explicit approval before proposing code or edits.
-`;
-  }
 
   await write(OPENCODE_CONFIG_PATH, JSON.stringify(config, null, 2));
-  console.log("✅ Sync Complete. OpenCode is now powered by Axel Mrak.");
+
+  if (existsSync(AI_SKILLS_DIR)) {
+    const skillDirs = await readdir(AI_SKILLS_DIR);
+    for (const skillName of skillDirs) {
+      const srcPath = join(AI_SKILLS_DIR, skillName, "SKILL.md");
+      const dstDir = join(OPENCODE_SKILLS_DIR, skillName);
+      const dstPath = join(dstDir, "SKILL.md");
+
+      if (existsSync(srcPath)) {
+        await mkdir(dstDir, { recursive: true });
+        await Bun.write(dstPath, await Bun.file(srcPath).text());
+        console.log(`📋 Synced skill: ${skillName}`);
+      }
+    }
+  }
+
+  console.log("✅ Sync Complete. Skills mode enabled.");
 }
 
 main();
