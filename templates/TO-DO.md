@@ -40,3 +40,25 @@
 ## ✅ Completed (Archive)
 
 - [x] Example Task completed.
+
+## NOTES
+
+**When all tasks are completed:**
+
+Reset to this minimal format:
+
+```markdown
+# [PROJECT NAME] - TO-DO LIST
+
+## [PHASE-NAME] COMPLETED ✅
+
+Summary of accomplishments.
+
+---
+
+## NEXT
+
+_Empty - Ready for new features or optimizations_
+```
+
+This keeps the file clean and prevents historical bloat.

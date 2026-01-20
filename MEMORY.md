@@ -125,7 +125,44 @@ For each update:
 1. Specify the section (e.g., "Architecture Snapshot", "ADRs").
 2. Provide the proposed new content or diff.
 3. Explain why this update will improve future iterations.
-4. Ask: “Apply this change to MEMORY.md?” and wait for confirmation.
+4. Ask: "Apply this change to MEMORY.md?" and wait for confirmation.
+
+---
+
+## 🔄 Checkpoint & Cleanup Protocol
+
+### Post-Refactor / Post-Feature Process
+
+After completing a major refactor or feature, the agent should:
+
+1. **Analyze recent work:**
+   - Review git commit history (last 15-20 commits)
+   - Identify architectural changes, new patterns, eliminated debt
+
+2. **Update project `.ai/MEMORY.md`:**
+   - Add ONE concise "## [PHASE] COMPLETED ✅" section
+   - List 3-7 key accomplishments (bullet points)
+   - Update architecture snapshot if structure changed
+   - Remove resolved tech debt items
+   - Keep it lean - avoid bloat
+
+3. **Reset project `.ai/TO-DO.md`:**
+   - If fully complete: Use minimal template with "NEXT" section empty
+   - If partially complete: Move done items to "COMPLETED" section
+   - Remove outdated metrics and old priorities
+
+4. **Propose, don't apply:**
+   - Show diffs for both files
+   - Wait for explicit approval
+   - Explain what changed and why
+
+### When to trigger this protocol:
+
+- User explicitly indicates completion ("we're done", "terminamos")
+- User asks to update memory/todo
+- Clear milestone reached (ask if uncertain)
+
+**Goal:** Keep `.ai/` files fresh, concise, and useful for future sessions without historical bloat.
 
 ---
 

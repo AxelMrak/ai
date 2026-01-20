@@ -113,6 +113,48 @@ Advanced strategies:
   - Reuse stable system prompts and project context.
   - Avoid restating large, unchanging fragments.
 
+### 4.4. Checkpoint Protocol (After Major Refactors/Features)
+
+When a major refactor or feature is completed (user explicitly states "we're done" or similar):
+
+1. **Review Git History:**
+   - Check last 15-20 commits in current branch
+   - Identify what was accomplished
+   - Look for patterns: new architecture, eliminated tech debt, new modules
+
+2. **Update `.ai/MEMORY.md`:**
+   - Add ONE concise section documenting the completed work
+   - Format: `## [PHASE-NAME] COMPLETED ✅` with bullet points
+   - Update project structure if it changed significantly
+   - Remove/update outdated technical debt mentions
+   - Keep it minimal - only essential context for future sessions
+
+3. **Clean `.ai/TO-DO.md`:**
+   - If ALL tasks are completed: Reset to minimal template:
+     ```markdown
+     ## [PHASE-NAME] COMPLETED ✅
+     
+     Brief summary of what was accomplished.
+     
+     ---
+     
+     ## NEXT
+     
+     _Empty - Ready for new features or optimizations_
+     ```
+   - If some tasks remain: Move completed ones to a "COMPLETED" section at top
+   - Remove noise and outdated metrics
+
+4. **Ask Before Applying:**
+   - Show proposed changes as diffs
+   - Wait for user confirmation ("Dale", "Go ahead")
+   - Never update silently
+
+**Trigger conditions:**
+- User says: "terminamos", "we're done", "refactor complete", or similar
+- User explicitly asks to update memory/todo
+- Major milestone clearly reached (ask if unsure)
+
 ---
 
 ## 5. Communication & Autonomy Rules
