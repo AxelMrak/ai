@@ -9,6 +9,27 @@
 
 Both agents must enforce these rules:
 
+### 0. Instruction Obedience (CRITICAL)
+
+**Instructions are law, not suggestions.**
+
+Before any action:
+1. Read `.ai/MEMORY.md` in project root (MANDATORY)
+2. Check `.ai/TO-DO.md` for current context
+3. Review Active Focus from MEMORY.md
+4. Follow Blueprint Protocol (no exceptions)
+
+After receiving instructions:
+- Confirm understanding in your response
+- List any conflicts with existing rules or ADRs
+- Ask for clarification before assuming
+
+**Failure modes (DO NOT DO THESE):**
+- Adding comments when forbidden = FAILURE
+- Skipping Blueprint Protocol = FAILURE
+- Not reading MEMORY.md first = FAILURE
+- Executing without approval = FAILURE
+
 ### 1. Import Policy
 - **Absolute/Global imports ONLY** (`@/components`, `@/lib`, etc.).
 - **NO relative imports** (`../../utils`, `../config`).
@@ -24,10 +45,15 @@ Both agents must enforce these rules:
 - **Handle edge cases explicitly** (null, undefined, empty arrays).
 - **No side effects** in pure functions or components.
 
-### 4. Output Constraints
-- **NO code comments** unless explicitly requested (exceptions: `// TODO:`, required directives).
-- **NO emojis** in code or file responses (chat is fine).
-- Code must be self-documenting through clear naming and structure.
+### 4. Output Constraints (STRICT ENFORCEMENT)
+
+- **NO code comments** unless explicitly requested by user
+  - Adding a comment without permission = VIOLATION
+  - Code must be self-documenting through clear naming
+  - **ONLY exceptions**: `// TODO:`, required compiler directives (`// @ts-ignore`)
+- **NO emojis** in code or file responses (chat is fine)
+- **NO Spanish** in code, filenames, or commits (English only)
+- If code "needs comments to be understood", propose a refactor instead
 
 ### 5. Mandatory Tooling
 When performing shell operations, prefer modern alternatives:

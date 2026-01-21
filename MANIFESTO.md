@@ -75,45 +75,69 @@ If code requires “explanatory comments” to be understood, the agent should p
 
 ## 4. Context, Tokens & .ai Protocol
 
-### 4.1. Bootstrap Rule
+### 4.1. Bootstrap Rule (MANDATORY)
 
-- If the `.ai/` folder is missing:
-  - Propose creating it with:
-    - `MEMORY.md` (context)
-    - `TO-DO.md` (backlog)
-  - Provide templates, but do not create files without explicit user approval.
+> ⚠️ **FIRST ACTION IN EVERY SESSION - NON-NEGOTIABLE**
 
-### 4.2. Git Hygiene
+1. **Check** if `.ai/` folder exists in project root
+2. **If missing**, IMMEDIATELY propose creating:
+   - `.ai/MEMORY.md` (from template)
+   - `.ai/TO-DO.md` (from template)
+3. **Verify** `.ai/` is in `.gitignore`
+4. **READ** `.ai/MEMORY.md` before any other action
+
+Do not proceed with ANY task until `.ai/` is verified and read.
+
+### 4.2. Pre-Flight Checklist (Before Any Task)
+
+Before starting any task, verify:
+
+- [ ] `.ai/` folder exists in project root
+- [ ] `.ai/MEMORY.md` has been read this session
+- [ ] `.ai/TO-DO.md` is current and relevant
+- [ ] Current focus from MEMORY.md is understood
+- [ ] No conflicts with existing ADRs
+- [ ] Blueprint Protocol will be followed
+
+If any check fails, address it before proceeding.
+
+### 4.3. Git Hygiene
 
 - Ensure `.ai/` is ignored in `.gitignore` to keep internal context private.
+- If `.gitignore` doesn't include `.ai/`, propose adding it.
 
-### 4.3. Context Management & Token Economy
+### 4.4. Context Management & Token Economy
 
 Modern token economy guidelines:
 
 - Prefer:
-  - Short, structured prompts.
+  - Short, structured prompts (~100-200 tokens for instructions).
   - Retrieval of minimal relevant context instead of full-file dumps.
+  - Load skills on-demand with `skill()`, not in initial prompt.
 - Use layered context:
-  - System / Manifesto / Memory as long-term project context.
-  - Current request + small retrieved snippets as working context.
+  - MANIFESTO + AGENTS as foundational rules (read once per session).
+  - Project `.ai/MEMORY.md` as working context.
+  - Current request + small retrieved snippets as immediate context.
 - Use summarization:
   - Convert long histories or search results into short, structured notes.
   - Keep these summaries in the conversation rather than raw logs.
+  - Use "state objects" to compress multi-step workflows.
 
 Advanced strategies:
 
 - Retrieval-Augmented Generation (RAG-style):
   - Pull only relevant code or docs via tools/MCP.
   - Summarize before using them in reasoning.
+  - Never read entire repos "just in case".
 - Model / Tool routing:
   - Use cheaper or smaller models/tools for exploration and search.
   - Reserve heavier reasoning for final planning and critical decisions.
 - Caching:
   - Reuse stable system prompts and project context.
   - Avoid restating large, unchanging fragments.
+  - Cache: DB schemas, project structure, frequent rules.
 
-### 4.4. Checkpoint Protocol (After Major Refactors/Features)
+### 4.5. Checkpoint Protocol (After Major Refactors/Features)
 
 When a major refactor or feature is completed (user explicitly states "we're done" or similar):
 

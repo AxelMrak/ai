@@ -8,40 +8,30 @@ if [[ ! -d "$AI_DIR" ]]; then
   exit 1
 fi
 
-CAT_CMD="cat"
-if command -v bat >/dev/null 2>&1; then
-  CAT_CMD="bat --plain --paging=never"
-fi
-
-print_section() {
-  local title="$1"
-  local file="$2"
-  
-  if [[ ! -f "$file" ]]; then
-    echo "Warning: $title file not found at $file" >&2
-    return 1
-  fi
-  
-  echo "## $title"
-  echo ""
-  $CAT_CMD "$file"
-  echo ""
-}
-
 echo "# SYSTEM CONTEXT"
 echo ""
-
-print_section "MANIFESTO" "$AI_DIR/MANIFESTO.md"
-print_section "AGENTS" "$AI_DIR/AGENTS.md"
-
-echo "## MEMORY PROTOCOL"
-echo "Read .ai/MEMORY.md in the project root."
+echo "## Required Reading (use tools to read these files):"
 echo ""
-
-echo "## SKILLS"
-if [[ -d "$AI_DIR/skills" ]]; then
-  echo "Available skills in '$AI_DIR/skills/'"
-else
-  echo "No skills directory found"
-fi
+echo "1. **MANIFESTO**: $AI_DIR/MANIFESTO.md"
+echo "   - Core rules, architecture principles, token economy"
 echo ""
+echo "2. **AGENTS**: $AI_DIR/AGENTS.md"
+echo "   - Agent personas (ATHENA/APOLLO), protocols, commandments"
+echo ""
+echo "3. **Project MEMORY**: .ai/MEMORY.md (in project root)"
+echo "   - Active focus, architecture snapshot, ADRs, tech debt"
+echo ""
+echo "## Pre-Flight Checklist:"
+echo ""
+echo "Before ANY task:"
+echo "- [ ] Check .ai/ folder exists (create if missing)"
+echo "- [ ] Read .ai/MEMORY.md"
+echo "- [ ] Verify .ai/ is in .gitignore"
+echo "- [ ] Follow Blueprint Protocol"
+echo ""
+echo "## Skills: $AI_DIR/skills/"
+echo "Use skill() to load domain-specific rules (python, react, etc.)"
+echo ""
+echo "## Protocol Summary:"
+echo "1. Observe → 2. Diagnose → 3. Plan → 4. Approve → 5. Execute"
+echo "Never skip steps. Always ask before executing."
