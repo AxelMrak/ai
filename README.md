@@ -1,185 +1,185 @@
-# 🤖 Sistema de Agentes AI para Desarrollo
+# AI Agent System for Development
 
-¿Te pasa que cada vez que hablas con una IA para programar, terminás explicando las mismas reglas una y otra vez? ¿O que el código que genera no sigue tus estándares? Este repo soluciona eso creando un "contrato" claro entre vos y tu asistente de IA.
+Do you find yourself explaining the same coding rules to AI assistants over and over? Or getting spaghetti code that doesn't follow your standards? This repo solves that by creating a clear "contract" between you and your AI assistant.
 
-## ¿Qué Problema Resuelve?
+## What Problem Does It Solve?
 
-Las IAs son geniales, pero pierden el contexto fácilmente. Terminás peleando con el mismo código espagueti o explicando por qué no usás `any` en TypeScript. Este sistema crea reglas claras y memoria persistente para que cada conversación sea productiva desde el minuto cero.
+AIs are great, but they lose context easily. You end up fighting the same spaghetti code or explaining why you don't use `any` in TypeScript. This system creates clear rules and persistent memory so every conversation is productive from minute one.
 
-## Inicio Rápido
+## Quick Start
 
-### 1. Cloná el Repo
+### 1. Clone the Repo
 ```bash
-git clone https://github.com/tu-repo/ai-agents-system.git
+git clone https://github.com/your-repo/ai-agents-system.git
 cd ai-agents-system
 ```
 
-### 2. Instalá Dependencias
+### 2. Install Dependencies
 ```bash
-bun install  # o npm install
+bun install  # or npm install
 ```
 
-### 3. Configurá en tu Proyecto
-Copiá estos archivos a `~/Developer/ai/` (o donde prefieras):
-- `MANIFESTO.md` - Tus reglas técnicas
-- `AGENTS.md` - Los personajes de IA
-- `skills/` - Reglas específicas por tecnología
+### 3. Set Up in Your Project
+Copy these files to `~/Developer/ai/` (or wherever you prefer):
+- `MANIFESTO.md` - Your technical rules
+- `AGENTS.md` - The AI personas
+- `skills/` - Rules specific to technologies
 
-### 4. Usalo en un Proyecto Nuevo
-En cualquier proyecto, creá una carpeta `.ai/` y copiá los templates:
+### 4. Use in a New Project
+In any project, create a `.ai/` folder and copy the templates:
 ```bash
 mkdir .ai
 cp ~/Developer/ai/templates/* .ai/
 ```
 
-¡Listo! Ahora tu IA sabe exactamente cómo trabajar.
+Done! Now your AI knows exactly how to work.
 
-## Cómo Funcionan los Agentes
+## How the Agents Work
 
-Imaginá que tenés un equipo de desarrollo:
+Imagine you have a development team:
 
 ```
-Usuario pregunta algo ──┬── "¿Cómo debería ser?" ── ATHENA (Arquitecta)
-                        ├── "¿Cómo lo implemento?" ── APOLLO (Desarrollador)
-                        └── "¿Por qué se rompió?" ── HEFESTO (Debugger)
+User asks something ──┬── "How should it be?" ── ATHENA (Architect)
+                      ├── "How do I implement it?" ── APOLLO (Developer)
+                      └── "Why did it break?" ── HEFESTO (Debugger)
 ```
 
-### 🏛️ ATHENA - La Arquitecta
-Es la "jefa" estricta. Planea todo antes de codificar.
-- **Hace:** Diagramas, estrategias, opciones con pros/contras
-- **No hace:** Código final (eso lo delega)
-- **Frase típica:** "Esto no escala, loco"
+### ATHENA - The Architect
+She's the strict "boss". Plans everything before coding.
+- **Does:** Diagrams, strategies, options with pros/cons
+- **Doesn't do:** Final code (delegates that)
+- **Typical phrase:** "This doesn't scale, dude"
 
-### 🎼 APOLLO - El Artesano
-El que pone las manos en la masa. Implementa limpio y simétrico.
-- **Hace:** Código impecable, tests, commits
-- **No hace:** Planes complejos (pide ayuda a ATHENA)
-- **Frase típica:** "Quedó una pinturita"
+### APOLLO - The Craftsman
+The one who gets hands-on. Implements clean and symmetrical.
+- **Does:** Impeccable code, tests, commits
+- **Doesn't do:** Complex plans (asks ATHENA for help)
+- **Typical phrase:** "That came out nice"
 
-### 🔥 HEFESTO - El Herrero
-Arregla lo roto. Busca la raíz de los bugs.
-- **Hace:** Debuggear, revisar calidad, aprobar para prod
-- **No hace:** Cambios grandes sin planear
-- **Frase típica:** "Vamos por partes"
+### HEFESTO - The Blacksmith
+Fixes what's broken. Finds the root of bugs.
+- **Does:** Debugging, quality reviews, approves for prod
+- **Doesn't do:** Big changes without planning
+- **Typical phrase:** "Let's take it step by step"
 
-## El Sistema de Memoria (.ai/)
+## The Memory System (.ai/)
 
-Cada proyecto tiene su propia "memoria" en la carpeta `.ai/`:
+Each project has its own "memory" in the `.ai/` folder:
 
 ```
 .ai/
-├── CONTEXT.md     # "Esto es el proyecto" - stack, estructura, reglas
-├── MEMORY.md      # "Dónde estamos" - foco actual, decisiones recientes
-├── TO-DO.md       # "Qué falta" - tareas pendientes
-├── plans/         # "Planes detallados" - para features complejas
-└── notes/         # "Aprendizajes" - bugs encontrados, lecciones
+├── CONTEXT.md     # "This is the project" - stack, structure, rules
+├── MEMORY.md      # "Where are we" - current focus, recent decisions
+├── TO-DO.md       # "What's left" - pending tasks
+├── plans/         # "Detailed plans" - for complex features
+└── notes/         # "Lessons learned" - bugs found, lessons
 ```
 
-**Analogía:** Es como si cada proyecto tuviera su propio diario. Cuando retomás después de días, sabés exactamente por dónde seguís.
+**Analogy:** It's like each project has its own diary. When you pick up after days, you know exactly where to continue.
 
-### Ejemplo Práctico
-Si estás trabajando en una app de e-commerce:
+### Practical Example
+If you're working on an e-commerce app:
 
-- **CONTEXT.md:** "Usamos Next.js, Tailwind, PostgreSQL. Componentes en `/components/`"
-- **MEMORY.md:** "Estamos agregando el carrito de compras. Última decisión: usar Zustand para state"
-- **TO-DO.md:** `[ ] Agregar API de pagos`, `[x] Diseño del carrito`
+- **CONTEXT.md:** "We use Next.js, Tailwind, PostgreSQL. Components in `/components/`"
+- **MEMORY.md:** "We're adding the shopping cart. Last decision: use Zustand for state"
+- **TO-DO.md:** `[ ] Add payment API`, `[x] Cart design`
 
-## Las Skills (Habilidades Especiales)
+## Skills (Special Abilities)
 
-Son reglas específicas para tecnologías. Como "recetas" probadas.
+These are specific rules for technologies. Like proven "recipes".
 
 ```
 skills/
-├── react/         # Cómo escribir React limpio
-├── python/        # Patrones de Python
-└── _scripts/      # Para sincronizar skills externas
+├── react/         # How to write clean React
+├── python/        # Python patterns
+└── _scripts/      # For syncing external skills
 ```
 
-**Ejemplo:** La skill de React dice "siempre usar hooks custom para lógica reutilizable" o "nunca pasar funciones inline a componentes".
+**Example:** The React skill says "always use custom hooks for reusable logic" or "never pass inline functions to components".
 
-## El Manifesto - Tus Principios Técnicos
+## The Manifesto - Your Technical Principles
 
-Es la "constitución" del código. Reglas no-negociables:
+It's the "constitution" of the code. Non-negotiable rules:
 
-### Arquitectura
-- **Capas claras:** Domain (lógica), Application (casos de uso), Infrastructure (bases de datos)
-- **No monitos gordos:** Nada de funciones con 200 líneas
-- **Imports absolutos:** `@/components/Button`, no `../../Button`
+### Architecture
+- **Clear layers:** Domain (logic), Application (use cases), Infrastructure (databases)
+- **No big monkeys:** Nothing with 200-line functions
+- **Absolute imports:** `@/components/Button`, not `../../Button`
 
-### Código Limpio
-- **Sin `any`:** Usa `unknown` y type guards
-- **Self-documenting:** El código explica qué hace sin comentarios
-- **Inglés en código:** Variables, funciones, commits en inglés
+### Clean Code
+- **No `any`:** Use `unknown` and type guards
+- **Self-documenting:** Code explains what it does without comments
+- **English in code:** Variables, functions, commits in English
 
-### Proceso
-- **Blueprint primero:** Arquitectura antes de codear
-- **Tests reales:** No `assert true`, cubrí casos reales
-- **Aprobación explícita:** Nada se ejecuta sin "dale"
+### Process
+- **Blueprint first:** Architecture before coding
+- **Real tests:** Not `assert true`, cover real cases
+- **Explicit approval:** Nothing executes without "go ahead"
 
-## Estructura del Proyecto
+## Project Structure
 
 ```
 ai/
-├── MANIFESTO.md          # Las reglas fundamentales
-├── AGENTS.md             # Los 3 personajes de IA
-├── README.md             # Este archivo
+├── MANIFESTO.md          # The fundamental rules
+├── AGENTS.md             # The 3 AI personas
+├── README.md             # This file
 ├── scripts/
-│   ├── sync-opencode.ts  # Conectar con OpenCode
-│   └── inject.sh         # Pegar contexto en prompts
-├── skills/               # Reglas por tecnología
+│   ├── sync-opencode.ts  # Connect with OpenCode
+│   └── inject.sh         # Paste context into prompts
+├── skills/               # Rules by technology
 │   ├── react/
 │   └── python/
-└── templates/            # Para copiar a nuevos proyectos
+└── templates/            # To copy to new projects
     └── TO-DO.md
 ```
 
-## Ejemplos de Uso
+## Usage Examples
 
-### Nuevo Proyecto
+### New Project
 ```bash
-# 1. Creá la carpeta de memoria
+# 1. Create memory folder
 mkdir .ai
 
-# 2. Copiá templates
+# 2. Copy templates
 cp ~/Developer/ai/templates/* .ai/
 
-# 3. Editá CONTEXT.md con tu stack
-# Editá MEMORY.md con el foco actual
+# 3. Edit CONTEXT.md with your stack
+# Edit MEMORY.md with current focus
 ```
 
-### Agregar una Feature
-1. **ATHENA:** "¿Cómo debería ser el login?"
-2. **APOLLO:** Implementa según el plan
-3. **HEFESTO:** Revisa que no haya bugs
+### Adding a Feature
+1. **ATHENA:** "How should the login be?"
+2. **APOLLO:** Implement according to the plan
+3. **HEFESTO:** Check there are no bugs
 
-### Resolver un Bug
-1. **HEFESTO:** "¿Por qué se rompió?"
-2. **APOLLO:** Arregla el código
-3. **ATHENA:** Si es un problema de arquitectura, replanea
+### Fixing a Bug
+1. **HEFESTO:** "Why did it break?"
+2. **APOLLO:** Fix the code
+3. **ATHENA:** If it's an architecture issue, replan
 
-## ¿Por Qué Funciona?
+## Why It Works
 
-- **Memoria persistente:** No repetís explicaciones
-- **Roles claros:** Cada agente sabe qué hacer
-- **Reglas explícitas:** Menos "vibe coding", más decisiones técnicas
-- **Escalable:** Funciona en proyectos chicos y grandes
+- **Persistent memory:** No repeating explanations
+- **Clear roles:** Each agent knows what to do
+- **Explicit rules:** Less "vibe coding", more technical decisions
+- **Scalable:** Works in small and large projects
 
-## Preguntas Frecuentes
+## FAQ
 
-**¿Es solo para TypeScript?** No, funciona con cualquier lenguaje. Las skills son por tecnología.
+**Is it only for TypeScript?** No, it works with any language. Skills are per technology.
 
-**¿Necesito todos los agentes?** No, podés usar solo ATHENA para planning o APOLLO para coding.
+**Do I need all agents?** No, you can use only ATHENA for planning or APOLLO for coding.
 
-**¿Qué pasa si cambio de IA?** Copiá los archivos .ai/ y listo - el contexto viaja con vos.
+**What if I switch AIs?** Copy the .ai/ files and you're good - the context travels with you.
 
-**¿Es mucho setup?** Para el primer proyecto sí, pero después es copiar-pegar.
+**Is it a lot of setup?** For the first project yes, but after it's copy-paste.
 
-## Filosofía
+## Philosophy
 
-Vos sos el arquitecto, la IA es el senior developer que ejecuta tu visión. Esto no automatiza el pensamiento, crea un framework donde el pensamiento es explícito, documentado y reutilizable.
+You are the architect, the AI is the senior developer executing your vision. This doesn't automate thinking, it creates a framework where thinking is explicit, documented, and reusable.
 
-Si te sirve, usalo. Si no, adaptalo. El código es tuyo.
+If it helps you, use it. If not, adapt it. The code is yours.
 
 ---
 
-*Hecho con ❤️ para desarrolladores que piensan antes de codear*
+*Made with love for developers who think before coding*
