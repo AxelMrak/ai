@@ -107,4 +107,23 @@ export const MCP_SERVERS: Record<string, McpServer> = {
       CONTEXT7_API_KEY: process.env.CONTEXT7_API_KEY || "",
     },
   },
+  "git": {
+    command: "npx",
+    args: ["-y", "@modelcontextprotocol/server-git"],
+  },
+  "memory": {
+    command: "npx",
+    args: ["-y", "@modelcontextprotocol/server-memory"],
+  },
+  "sequential-thinking": {
+    command: "npx",
+    args: ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+  },
+  "brave-search": {
+    command: "npx",
+    args: ["-y", "@modelcontextprotocol/server-brave-search"],
+    env: {
+      BRAVE_API_KEY: process.env.BRAVE_API_KEY || "",
+    },
+  },
 };

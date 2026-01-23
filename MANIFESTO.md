@@ -75,38 +75,146 @@ If code requires “explanatory comments” to be understood, the agent should p
 
 ## 4. Context, Tokens & .ai Protocol
 
-### 4.1. Bootstrap Rule (MANDATORY)
+### 4.1. Three-Layer Memory Architecture
 
-> ⚠️ **FIRST ACTION IN EVERY SESSION - NON-NEGOTIABLE**
+> Memory is the foundation of intelligent agent behavior.
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  LAYER 1: Global Memory (Cross-Project)                      │
+│  Location: ~/.ai/global-memory.md                            │
+│  Content: User preferences, cross-project learnings          │
+│  Update: When patterns repeat across projects                │
+│  Access: MCP memory server                                   │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│  LAYER 2: Project Memory (Per-Project)                       │
+│  Location: .ai/CONTEXT.md + .ai/MEMORY.md                    │
+│  Content: Stack, architecture, current focus, decisions      │
+│  Update: Session checkpoints, major milestones               │
+│  Access: File read/write                                     │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│  LAYER 3: Session Memory (Ephemeral)                         │
+│  Location: Conversation context                              │
+│  Content: Current task state, files read, decisions made     │
+│  Update: Continuously during session                         │
+│  Access: LLM context window                                  │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### 4.2. Project .ai/ Structure
+
+```
+.ai/
+├── CONTEXT.md             # Semi-static: stack, structure, patterns, ADRs
+├── MEMORY.md              # Dynamic: current focus, recent decisions
+├── TO-DO.md               # Task tracking with status
+├── plans/                 # Collaborative work plans
+│   └── YYYY-MM-DD-{name}.md
+└── notes/                 # Technical notes, bugs, learnings
+    └── {descriptive-name}.md
+```
+
+**File Purposes:**
+
+| File | Update Frequency | Owner | Content |
+|------|------------------|-------|---------|
+| `CONTEXT.md` | Rare (major changes) | ATHENA | Stack, structure, ADRs, patterns |
+| `MEMORY.md` | Every session | All | Current focus, recent decisions |
+| `TO-DO.md` | Constant | All | Tasks with status |
+| `plans/*.md` | Per feature/refactor | All | Collaborative plans |
+| `notes/*.md` | Ad-hoc | All | Bugs, decisions, learnings |
+
+### 4.3. CONTEXT.md Specification
+
+> Semi-static project snapshot. Updated only on major changes.
+
+**Template:**
+
+```markdown
+# Project Context
+> Last updated: YYYY-MM-DD by [AGENT]
+> Update triggers: Major refactor, arch change, stack change
+
+## Stack
+lang: [typescript/python/etc]
+runtime: [node-22/python-3.12/etc]
+framework: [next-15/fastapi/etc]
+db: [postgres/sqlite/etc]
+ui: [tailwind/shadcn/etc]
+test: [vitest/pytest/etc]
+
+## Structure
+[Folder structure with brief descriptions]
+
+## Skills
+[List of relevant skills from ~/Developer/ai/skills/]
+
+## MCPs
+[List of MCPs this project uses]
+
+## Key Decisions (ADRs)
+- [ADR-001] Decision: Reason
+- [ADR-002] Decision: Reason
+
+## Patterns
+[Patterns used in this project]
+
+## Known Constraints
+[Performance, compatibility, business constraints]
+```
+
+**Update Triggers:**
+- Major refactor completed
+- New technology added to stack
+- Architecture pattern changed
+- New ADR created
+
+### 4.4. Bootstrap Rule (MANDATORY)
+
+> FIRST ACTION IN EVERY SESSION - NON-NEGOTIABLE
 
 1. **Check** if `.ai/` folder exists in project root
 2. **If missing**, IMMEDIATELY propose creating:
+   - `.ai/CONTEXT.md` (analyze project first)
    - `.ai/MEMORY.md` (from template)
    - `.ai/TO-DO.md` (from template)
+   - `.ai/plans/` directory
+   - `.ai/notes/` directory
 3. **Verify** `.ai/` is in `.gitignore`
-4. **READ** `.ai/MEMORY.md` before any other action
+4. **READ** in order:
+   - `.ai/CONTEXT.md` (project fundamentals)
+   - `.ai/MEMORY.md` (current state)
+   - Scan `.ai/plans/` for active work
 
 Do not proceed with ANY task until `.ai/` is verified and read.
 
-### 4.2. Pre-Flight Checklist (Before Any Task)
+### 4.5. Pre-Flight Checklist (Before Any Task)
 
 Before starting any task, verify:
 
-- [ ] `.ai/` folder exists in project root
-- [ ] `.ai/MEMORY.md` has been read this session
-- [ ] `.ai/TO-DO.md` is current and relevant
+- [ ] `.ai/` folder exists with all required files
+- [ ] `.ai/CONTEXT.md` has been read (know the stack)
+- [ ] `.ai/MEMORY.md` has been read (know the focus)
+- [ ] `.ai/plans/` scanned for active plans
 - [ ] Current focus from MEMORY.md is understood
-- [ ] No conflicts with existing ADRs
+- [ ] No conflicts with existing ADRs in CONTEXT.md
+- [ ] Relevant skills loaded based on CONTEXT.md
 - [ ] Blueprint Protocol will be followed
 
 If any check fails, address it before proceeding.
 
-### 4.3. Git Hygiene
+### 4.6. Git Hygiene
 
 - Ensure `.ai/` is ignored in `.gitignore` to keep internal context private.
 - If `.gitignore` doesn't include `.ai/`, propose adding it.
 
-### 4.4. Context Management & Token Economy
+### 4.7. Context Management & Token Economy
 
 Modern token economy guidelines:
 
@@ -137,7 +245,7 @@ Advanced strategies:
   - Avoid restating large, unchanging fragments.
   - Cache: DB schemas, project structure, frequent rules.
 
-### 4.5. Checkpoint Protocol (After Major Refactors/Features)
+### 4.8. Checkpoint Protocol (After Major Refactors/Features)
 
 When a major refactor or feature is completed (user explicitly states "we're done" or similar):
 
@@ -179,7 +287,7 @@ When a major refactor or feature is completed (user explicitly states "we're don
 - User explicitly asks to update memory/todo
 - Major milestone clearly reached (ask if unsure)
 
-### 4.6. Context Iteration Protocol (CRITICAL)
+### 4.9. Context Iteration Protocol (CRITICAL)
 
 > `.ai/` is not "read once and forget" - it's a living working memory.
 
@@ -225,7 +333,7 @@ Each planned task MUST include:
 - Ignoring existing context in MEMORY.md = VIOLATION
 - Starting work without verifying alignment = VIOLATION
 
-### 4.7. Skill Detection Protocol
+### 4.10. Skill Detection Protocol
 
 > Skills are codified best practices. Detect, confirm, and persist them.
 
@@ -305,7 +413,7 @@ After creating/modifying a rule:
 - If similar rule exists: highlight overlap, ask how to proceed
 - If adding to external skill: use `_custom-` prefix to avoid sync conflicts
 
-### 4.8. External Skills Sync
+### 4.11. External Skills Sync
 
 > Skills can be sourced from external GitHub repositories and kept in sync.
 
@@ -458,6 +566,30 @@ Expected answer shape:
   }
   ```
 - Note: Requires CONTEXT7_API_KEY environment variable for secure configuration
+
+**git**
+- Purpose: Git operations and repository analysis
+- When to use: Commits, branches, history analysis, blame
+- When NOT to use: Simple file reads (use filesystem)
+- Note: APOLLO uses for commits, HEFESTO uses for blame/history
+
+**memory**
+- Purpose: Persistent cross-session memory
+- When to use: Storing user preferences, cross-project learnings
+- When NOT to use: Project-specific context (use .ai/ files instead)
+- Location: ~/.ai/global-memory.md
+
+**sequential-thinking**
+- Purpose: Step-by-step reasoning for complex problems
+- When to use: Debugging, architecture decisions, multi-step analysis
+- When NOT to use: Simple tasks, direct implementation
+- Note: Primarily used by ATHENA and HEFESTO
+
+**brave-search**
+- Purpose: Web search with better technical results than DuckDuckGo
+- When to use: Finding documentation, researching errors, library comparisons
+- When NOT to use: Questions answerable from codebase
+- Note: Requires BRAVE_API_KEY (free tier available)
 
 ### MCP Selection Rules
 
