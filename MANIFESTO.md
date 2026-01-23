@@ -370,11 +370,11 @@ Expected answer shape:
 - When NOT to use: Simple API calls, non-browser tasks
 - Activation: When user requests browser interaction or E2E tests
 
-**brave-search**
-- Purpose: Web search for technical research
+**ddg-search**
+- Purpose: Web search for technical research (DuckDuckGo)
 - When to use: Finding solutions, checking library docs, researching bugs
 - When NOT to use: Questions answerable from codebase or memory
-- Note: Requires BRAVE_API_KEY environment variable
+- Note: No API key required
 
 ### MCP Selection Rules
 

@@ -96,11 +96,8 @@ export const MCP_SERVERS: Record<string, McpServer> = {
     command: "npx",
     args: ["-y", "@anthropic/mcp-server-playwright"],
   },
-  "brave-search": {
+  "ddg-search": {
     command: "npx",
-    args: ["-y", "@anthropic/mcp-server-brave-search"],
-    env: {
-      BRAVE_API_KEY: "${BRAVE_API_KEY}",
-    },
+    args: ["-y", "@oevortex/ddg_search"],
   },
 };
