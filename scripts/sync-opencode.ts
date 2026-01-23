@@ -69,19 +69,19 @@ const DEFAULT_CONFIG: OpenCodeConfig = {
   },
   mcp: {
     "sequential-thinking": {
-      command: "npx",
-      args: ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+      type: "local",
+      command: ["npx", "-y", "@modelcontextprotocol/server-sequential-thinking"],
     },
     "fast-filesystem": {
-      command: "npx",
-      args: ["-y", "fast-filesystem-mcp"],
-      env: {
+      type: "local",
+      command: ["npx", "-y", "fast-filesystem-mcp"],
+      environment: {
         CREATE_BACKUP_FILES: "true",
       },
     },
     "next-devtools": {
-      command: "npx",
-      args: ["-y", "next-devtools-mcp@latest"],
+      type: "local",
+      command: ["npx", "-y", "next-devtools-mcp@latest"],
     },
   },
   agent: {
