@@ -5,6 +5,7 @@ import {
   MCP_SERVERS,
   ATHENA_PROMPT,
   APOLLO_PROMPT,
+  HEFESTO_PROMPT,
 } from "./shared/config";
 import { pathExists, ensureDirectory, syncSkillsToDir } from "./shared/utils";
 
@@ -81,6 +82,16 @@ const DEFAULT_CONFIG: OpenCodeConfig = {
         skill: true,
       },
     },
+    hefesto: {
+      mode: "primary",
+      description: "Senior Debugger. Patient. Diagnose > Fix.",
+      prompt: HEFESTO_PROMPT,
+      tools: {
+        write: true,
+        edit: true,
+        skill: true,
+      },
+    },
   },
 };
 
@@ -114,6 +125,11 @@ async function loadConfig(): Promise<OpenCodeConfig> {
           ...DEFAULT_CONFIG.agent.apollo,
           ...(existingConfig.agent?.apollo || {}),
           prompt: APOLLO_PROMPT,
+        },
+        hefesto: {
+          ...DEFAULT_CONFIG.agent.hefesto,
+          ...(existingConfig.agent?.hefesto || {}),
+          prompt: HEFESTO_PROMPT,
         },
       },
     };
