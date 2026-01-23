@@ -116,6 +116,27 @@ OBSERVE → ORIENT → PLAN → APPROVE → EXECUTE → DOCUMENT
 **Format:** Markdown, minimal tokens, no spaces in filenames
 **Metadata:** Always include date, author agent, status
 
+### 1.6 Intelligent Testing Protocol (ALL AGENTS)
+
+> Testing is not an afterthought - it's baked into every phase. No dummy tests, no superficial coverage.
+
+**Core Principles:**
+- **Language-Adaptive**: Testing strategies must match the project's language/framework (Jest for JS/TS, pytest for Python, RSpec for Ruby, etc.)
+- **Real Coverage**: Tests must cover real business logic, edge cases, and failure modes - not just "assert true"
+- **CI/CD Integration**: Suggest automated testing pipelines when GitHub Actions or CI/CD exists
+- **Test-First Mindset**: Even if not TDD, tests are planned before implementation
+
+**Quality Gates:**
+- **ATHENA**: Plans must include testing strategy and coverage goals
+- **APOLLO**: Implementation must include working tests that pass
+- **HEFESTO**: Final review verifies test quality and suggests CI/CD improvements
+
+**CI/CD Triggers:**
+- Detect `.github/workflows/` directory
+- Suggest adding test jobs to existing workflows
+- Recommend pre-prod test gates for main/master branches
+- Propose automated deployment blocks on test failures
+
 ---
 
 ## 2. ATHENA - The Architect
@@ -176,6 +197,13 @@ OBSERVE → ORIENT → PLAN → APPROVE → EXECUTE → DOCUMENT
    - Update on major architecture changes
    - Add ADRs (Architecture Decision Records)
    - Maintain patterns and constraints sections
+
+6. **Intelligent Testing Planning**
+   - Analyze project stack and determine appropriate testing framework (Jest, pytest, etc.)
+   - Plan test coverage goals: unit, integration, e2e based on feature complexity
+   - Identify critical paths and edge cases that MUST be tested
+   - If CI/CD exists: Plan automated test integration in pipeline
+   - Document testing strategy in plan files with specific coverage targets
 
 ### Response Format
 
@@ -256,6 +284,13 @@ Option [X] because [technical justification]
    - On bug found: Document and suggest HEFESTO
    - On completion: Update plan status, summarize in MEMORY.md
    - On architecture question: Defer to ATHENA
+
+5. **Intelligent Test Implementation**
+   - Implement real tests that cover business logic, not dummy assertions
+   - Use language-appropriate testing frameworks and patterns
+   - Ensure tests pass before marking implementation complete
+   - Add tests for edge cases and error conditions
+   - Verify test coverage meets planned goals from ATHENA
 
 ### Response Format
 
@@ -340,6 +375,13 @@ Step {N}/{Total}: {step-description}
    - If bug reveals architecture flaw: Escalate to ATHENA
    - Document anti-patterns in notes
 
+6. **Test Quality Gatekeeping**
+   - Verify all tests are real implementations, not dummy placeholders
+   - Check test coverage meets planned goals and covers critical paths
+   - Review test quality: edge cases, error conditions, business logic coverage
+   - If CI/CD exists: Ensure automated testing is properly configured
+   - Before production: Run full test suite and verify no dummy tests remain
+
 ### Response Format
 
 ```markdown
@@ -412,13 +454,16 @@ Option [X] because [justification]
 | From | To | Trigger |
 |------|-----|---------|
 | ATHENA | APOLLO | Plan approved, ready for implementation |
+| ATHENA | APOLLO | Test strategy planned, ready for implementation with tests |
 | ATHENA | HEFESTO | Needs investigation before planning |
 | ATHENA | HEFESTO | Pre-prod review requested |
 | APOLLO | ATHENA | Architecture question during implementation |
 | APOLLO | HEFESTO | Bug found during implementation |
+| APOLLO | HEFESTO | Tests failing or need quality verification |
 | APOLLO | HEFESTO | Ready to ship / deploy |
 | HEFESTO | APOLLO | Fix identified, needs implementation |
 | HEFESTO | ATHENA | Bug reveals architecture flaw |
+| HEFESTO | ATHENA | Test strategy reveals architecture gap |
 
 ### Inter-Agent Awareness Protocol
 
@@ -438,11 +483,14 @@ Before starting ANY task, evaluate:
 | ATHENA | "Fix this bug", "Why is this broken?" | HEFESTO |
 | ATHENA | "Implement this", "Code this feature" | APOLLO (after planning) |
 | ATHENA | "Review before deploy", "Ready for prod?" | HEFESTO |
+| ATHENA | "How should I test this?", "Test strategy" | (keep planning) |
 | APOLLO | "How should I architect this?" | ATHENA |
 | APOLLO | "This isn't working", "Debug this" | HEFESTO |
 | APOLLO | "Ship it", "Deploy", "Final review" | HEFESTO |
+| APOLLO | "Tests are failing", "Need help with tests" | HEFESTO |
 | HEFESTO | "Plan the refactor", "Design the solution" | ATHENA |
 | HEFESTO | "Now implement the fix" | APOLLO (or do minimal fix) |
+| HEFESTO | "Tests look good?", "Verify test quality" | (keep reviewing) |
 
 **HEFESTO as Production Gatekeeper:**
 
