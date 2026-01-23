@@ -352,11 +352,6 @@ Expected answer shape:
 
 ### Available MCPs
 
-**sequential-thinking**
-- Purpose: Complex multi-step reasoning, breaking down problems
-- When to use: Architecture decisions, debugging complex issues, planning refactors
-- When NOT to use: Simple questions, straightforward code changes
-
 **fast-filesystem**
 - Purpose: Efficient file operations with backup support
 - When to use: Bulk file operations, safe edits with rollback capability
@@ -369,18 +364,30 @@ Expected answer shape:
 - When NOT to use: Non-Next.js projects
 - Activation: Only when project has `next` in dependencies
 
+**playwright**
+- Purpose: Browser automation, E2E testing, web scraping
+- When to use: Testing UI flows, scraping data, debugging browser issues
+- When NOT to use: Simple API calls, non-browser tasks
+- Activation: When user requests browser interaction or E2E tests
+
+**brave-search**
+- Purpose: Web search for technical research
+- When to use: Finding solutions, checking library docs, researching bugs
+- When NOT to use: Questions answerable from codebase or memory
+- Note: Requires BRAVE_API_KEY environment variable
+
 ### MCP Selection Rules
 
 1. **Detect project type first**: Check package.json, pyproject.toml, etc.
 2. **Use MCPs on-demand**: Don't invoke MCPs speculatively
 3. **Prefer native tools**: Use built-in Read/Write/Grep before MCPs
-4. **Chain intelligently**: sequential-thinking → plan → fast-filesystem → execute
+4. **Search before asking**: Use brave-search for unknowns before hallucinating
 5. **Report MCP usage**: Tell user which MCP was used and why
 
 ### Anti-Patterns
 
 - Using next-devtools on non-Next.js projects = WASTE
-- Using sequential-thinking for trivial questions = OVERKILL
+- Using playwright for non-browser tasks = OVERKILL
 - Invoking all MCPs "just in case" = TOKEN BURN
 - Not explaining MCP choice to user = OPACITY
 

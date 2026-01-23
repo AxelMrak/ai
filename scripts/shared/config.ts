@@ -81,10 +81,6 @@ export interface McpServer {
 }
 
 export const MCP_SERVERS: Record<string, McpServer> = {
-  "sequential-thinking": {
-    command: "npx",
-    args: ["-y", "@modelcontextprotocol/server-sequential-thinking"],
-  },
   "fast-filesystem": {
     command: "npx",
     args: ["-y", "fast-filesystem-mcp"],
@@ -95,5 +91,16 @@ export const MCP_SERVERS: Record<string, McpServer> = {
   "next-devtools": {
     command: "npx",
     args: ["-y", "next-devtools-mcp@latest"],
+  },
+  "playwright": {
+    command: "npx",
+    args: ["-y", "@anthropic/mcp-server-playwright"],
+  },
+  "brave-search": {
+    command: "npx",
+    args: ["-y", "@anthropic/mcp-server-brave-search"],
+    env: {
+      BRAVE_API_KEY: "${BRAVE_API_KEY}",
+    },
   },
 };
