@@ -68,10 +68,20 @@ const DEFAULT_CONFIG: OpenCodeConfig = {
     ignore: ["node_modules/**", "dist/**", "build/**", ".git/**"],
   },
   mcp: {
-    context7: {
-      type: "remote",
-      url: "https://mcp.context7.com/mcp",
-      enabled: true,
+    "sequential-thinking": {
+      command: "npx",
+      args: ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+    },
+    "fast-filesystem": {
+      command: "npx",
+      args: ["-y", "fast-filesystem-mcp"],
+      env: {
+        CREATE_BACKUP_FILES: "true",
+      },
+    },
+    "next-devtools": {
+      command: "npx",
+      args: ["-y", "next-devtools-mcp@latest"],
     },
   },
   agent: {
@@ -141,7 +151,6 @@ async function loadConfig(): Promise<OpenCodeConfig> {
       },
       mcp: {
         ...DEFAULT_CONFIG.mcp,
-        ...(existingConfig.mcp || {}),
       },
       agent: {
         ...DEFAULT_CONFIG.agent,

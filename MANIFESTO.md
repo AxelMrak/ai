@@ -179,6 +179,124 @@ When a major refactor or feature is completed (user explicitly states "we're don
 - User explicitly asks to update memory/todo
 - Major milestone clearly reached (ask if unsure)
 
+### 4.6. Context Iteration Protocol (CRITICAL)
+
+> `.ai/` is not "read once and forget" - it's a living working memory.
+
+**Mandatory Re-read Triggers:**
+
+Before these actions, ALWAYS re-read `.ai/MEMORY.md` and `.ai/TO-DO.md`:
+
+1. **Planning requests**: "hagamos un plan", "planifiquemos", "quiero hacer X"
+2. **Feature requests**: "agreguemos", "implementemos", "nueva feature"
+3. **Refactor requests**: "refactoreemos", "limpiemos", "mejoremos"
+4. **Architecture discussions**: "como deberia", "que patron", "estructura"
+5. **Context switches**: When user changes topic or module focus
+6. **Resuming work**: "retomemos", "seguimos con", "donde quedamos"
+7. **Multi-step tasks**: Before each step of a complex workflow
+
+**Iteration Behavior:**
+
+- **Before proposing ANY plan**: Check TO-DO.md for existing plans/context
+- **Before starting ANY task**: Verify it aligns with MEMORY.md focus
+- **After user approves a plan**: Propose TO-DO.md update with the plan details
+- **After completing work**: Propose MEMORY.md update with outcomes
+- **On context switch**: Summarize current state, re-read `.ai/`, adapt
+
+**TO-DO.md Structure (Enforced):**
+
+Each planned task MUST include:
+- **What**: Clear description of the change
+- **Why**: Technical justification (not "because user asked")
+- **How**: Implementation approach (patterns, layers affected)
+- **Dependencies**: What must exist/complete first
+- **Status**: `[ ]` pending, `[~]` in progress, `[x]` done, `[-]` cancelled
+
+**Token Economy for Iteration:**
+
+- Re-reads should be targeted: scan headers first, read sections on demand
+- Summarize `.ai/` state in reasoning, don't quote entire files
+- Use `.ai/` as external memory to reduce prompt bloat
+- Checkpoint progress in TO-DO.md to enable session continuity
+
+**Anti-Pattern (DO NOT DO):**
+- Reading `.ai/` once and never again = VIOLATION
+- Proposing plans without checking TO-DO.md = VIOLATION
+- Ignoring existing context in MEMORY.md = VIOLATION
+- Starting work without verifying alignment = VIOLATION
+
+### 4.7. Skill Detection Protocol
+
+> Skills are codified best practices. Detect, confirm, and persist them.
+
+**Detection Triggers:**
+
+The agent should detect when the user is teaching a best practice:
+- Explicit: "siempre hago esto", "regla:", "buena practica:", "acordate de"
+- Implicit: Correcting agent output with a pattern, repeating a preference
+- Code review: "esto esta mal porque...", "mejor asi..."
+
+**Confirmation Flow (MANDATORY):**
+
+1. **Detect**: Identify potential skill from user input
+2. **Confirm intent**: "Queres que agregue esto como skill?"
+3. **Clarify scope**: 
+   - "Para que lenguaje/tecnologia?" (detect from project or ask)
+   - "Es especifico de [detected tech] o es una buena practica general?"
+4. **Preview**: Show the skill content before writing
+5. **Execute**: Create/update the skill file, run build script
+6. **Verify**: Confirm skill was added successfully
+
+**Skill File Structure:**
+
+```
+skills/
+  [language]/           # e.g., react, python, go, general
+    rules/
+      [rule-name].md    # Individual rule files
+    SKILL.md            # Auto-generated from rules/
+```
+
+**Rule File Format:**
+
+```markdown
+---
+title: Rule Title
+impact: HIGH | MEDIUM | LOW
+tags: tag1, tag2
+---
+
+## Rule Title
+
+Brief explanation of why this matters.
+
+**Incorrect:**
+[code example]
+
+**Correct:**
+[code example]
+
+Reference: [optional link]
+```
+
+**Build Integration:**
+
+After creating/modifying a rule:
+1. Run `bun run skills/_scripts/build.ts`
+2. Verify SKILL.md was regenerated
+3. Report success/failure to user
+
+**Scope Resolution:**
+
+- If project has clear tech stack (package.json, pyproject.toml): use detected language
+- If ambiguous: ask user to clarify
+- `general/` folder for cross-language practices (SOLID, naming, architecture)
+
+**Update vs Create:**
+
+- If rule already exists: show diff, ask to update or create separate
+- If similar rule exists: highlight overlap, ask how to proceed
+
 ---
 
 ## 5. Communication & Autonomy Rules
@@ -220,10 +338,50 @@ Expected answer shape:
 
 ## 7. Learning & Documentation Through Dialogue
 
-- The conversation itself is the main “comment layer”.
+- The conversation itself is the main "comment layer".
 - The agent should:
   - Use theory to justify proposals (SOLID, design patterns, DDD concepts).
   - Highlight trade-offs (runtime cost, complexity, familiarity).
   - Offer refactor strategies that can be implemented incrementally.
+
+---
+
+## 8. MCP Usage (Model Context Protocol)
+
+> MCPs extend agent capabilities. Use them intelligently, not by default.
+
+### Available MCPs
+
+**sequential-thinking**
+- Purpose: Complex multi-step reasoning, breaking down problems
+- When to use: Architecture decisions, debugging complex issues, planning refactors
+- When NOT to use: Simple questions, straightforward code changes
+
+**fast-filesystem**
+- Purpose: Efficient file operations with backup support
+- When to use: Bulk file operations, safe edits with rollback capability
+- When NOT to use: Single file reads (use standard Read tool)
+- Note: Creates backups automatically (CREATE_BACKUP_FILES=true)
+
+**next-devtools**
+- Purpose: Next.js specific debugging and development tools
+- When to use: Next.js projects - routing issues, build analysis, performance
+- When NOT to use: Non-Next.js projects
+- Activation: Only when project has `next` in dependencies
+
+### MCP Selection Rules
+
+1. **Detect project type first**: Check package.json, pyproject.toml, etc.
+2. **Use MCPs on-demand**: Don't invoke MCPs speculatively
+3. **Prefer native tools**: Use built-in Read/Write/Grep before MCPs
+4. **Chain intelligently**: sequential-thinking → plan → fast-filesystem → execute
+5. **Report MCP usage**: Tell user which MCP was used and why
+
+### Anti-Patterns
+
+- Using next-devtools on non-Next.js projects = WASTE
+- Using sequential-thinking for trivial questions = OVERKILL
+- Invoking all MCPs "just in case" = TOKEN BURN
+- Not explaining MCP choice to user = OPACITY
 
 ---
