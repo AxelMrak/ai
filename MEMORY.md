@@ -67,6 +67,10 @@ Legend: ✅ Stable | 🚧 WIP | ❌ Needs Refactor
 
 ---
 
+## 📝 Recent Changes
+
+- **Inter-Agent Awareness Protocol**: Added comprehensive rules for agents to recognize when another agent is better suited for a task and proactively suggest handoffs. Includes HEFESTO as production gatekeeper with final review responsibilities.
+
 ## 🪙 Token Mode
 
 - **Mode A (Minimal)**: MEMORY.md + relevant files only

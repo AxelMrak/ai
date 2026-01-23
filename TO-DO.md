@@ -17,3 +17,4 @@
 - [x] Initial structure created (MANIFESTO, AGENTS, MEMORY)
 - [x] sync-opencode.ts script
 - [x] Skills system (react, python)
+- [x] Add Inter-Agent Awareness Protocol to AGENTS.md
