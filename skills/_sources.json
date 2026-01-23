@@ -1,0 +1,32 @@
+{
+  "$schema": "./sources.schema.json",
+  "_comment": "External skill sources. Run 'bun run skills/_scripts/sync-external.ts' to update.",
+  "sources": {
+    "frontend-design": {
+      "repo": "anthropics/skills",
+      "path": "skills/frontend-design",
+      "branch": "main"
+    },
+    "skill-creator": {
+      "repo": "anthropics/skills",
+      "path": "skills/skill-creator",
+      "branch": "main"
+    },
+    "webapp-testing": {
+      "repo": "anthropics/skills",
+      "path": "skills/webapp-testing",
+      "branch": "main"
+    },
+    "react-best-practices": {
+      "repo": "vercel-labs/agent-skills",
+      "path": "skills/react-best-practices",
+      "branch": "main",
+      "preserve": ["rules/_custom-*.md"]
+    },
+    "web-design-guidelines": {
+      "repo": "vercel-labs/agent-skills",
+      "path": "skills/web-design-guidelines",
+      "branch": "main"
+    }
+  }
+}

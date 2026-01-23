@@ -100,4 +100,11 @@ export const MCP_SERVERS: Record<string, McpServer> = {
     command: "npx",
     args: ["-y", "@oevortex/ddg_search"],
   },
+  "context7": {
+    command: "npx",
+    args: ["-y", "context7-mcp"],
+    env: {
+      CONTEXT7_API_KEY: process.env.CONTEXT7_API_KEY || "",
+    },
+  },
 };

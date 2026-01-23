@@ -241,20 +241,26 @@ The agent should detect when the user is teaching a best practice:
 1. **Detect**: Identify potential skill from user input
 2. **Confirm intent**: "Queres que agregue esto como skill?"
 3. **Clarify scope**: 
-   - "Para que lenguaje/tecnologia?" (detect from project or ask)
-   - "Es especifico de [detected tech] o es una buena practica general?"
+   - "Para que skill set?" (detect from context or ask)
+   - "Es para un skill existente o uno nuevo?"
 4. **Preview**: Show the skill content before writing
-5. **Execute**: Create/update the skill file, run build script
+5. **Execute**: Create/update the rule file, run build script
 6. **Verify**: Confirm skill was added successfully
 
-**Skill File Structure:**
+**Skill Directory Structure:**
 
 ```
 skills/
-  [language]/           # e.g., react, python, go, general
-    rules/
-      [rule-name].md    # Individual rule files
-    SKILL.md            # Auto-generated from rules/
+  _scripts/
+    build.ts              # Generates SKILL.md from rules/
+    sync-external.ts      # Syncs external skills from GitHub
+  _sources.json           # Registry of external skill sources
+  [skill-name]/           # e.g., react-best-practices, python, general
+    SKILL.md              # Main skill file (auto-generated or from source)
+    AGENTS.md             # Optional agent-specific instructions
+    rules/                # Individual rule files
+      [rule-name].md
+      _custom-*.md        # Custom rules (preserved during sync)
 ```
 
 **Rule File Format:**
@@ -288,14 +294,72 @@ After creating/modifying a rule:
 
 **Scope Resolution:**
 
-- If project has clear tech stack (package.json, pyproject.toml): use detected language
-- If ambiguous: ask user to clarify
+- If skill exists in `skills/`: add rule to that skill's `rules/` folder
+- If skill doesn't exist: create new folder with `rules/` subdirectory
+- For external skills: prefix custom rules with `_custom-` to preserve during sync
 - `general/` folder for cross-language practices (SOLID, naming, architecture)
 
 **Update vs Create:**
 
 - If rule already exists: show diff, ask to update or create separate
 - If similar rule exists: highlight overlap, ask how to proceed
+- If adding to external skill: use `_custom-` prefix to avoid sync conflicts
+
+### 4.8. External Skills Sync
+
+> Skills can be sourced from external GitHub repositories and kept in sync.
+
+**External Sources Registry (`_sources.json`):**
+
+```json
+{
+  "sources": {
+    "skill-name": {
+      "repo": "owner/repo",
+      "path": "path/to/skill",
+      "branch": "main",
+      "preserve": ["rules/_custom-*.md"]
+    }
+  }
+}
+```
+
+**Sync Behavior:**
+
+- `bun run skills/_scripts/sync-external.ts` updates all external skills
+- Files matching `preserve` patterns are NOT overwritten or deleted
+- Custom rules added to external skills survive sync if prefixed with `_custom-`
+- Local-only skills (not in `_sources.json`) are never touched
+
+**Adding External Skills:**
+
+To add a new external skill source:
+1. Add entry to `_sources.json` with repo, path, branch
+2. Run sync script to fetch initial content
+3. Optionally add `preserve` patterns for custom rules
+
+**Current External Sources:**
+
+| Skill | Source | Description |
+|-------|--------|-------------|
+| `frontend-design` | anthropics/skills | Frontend design patterns |
+| `skill-creator` | anthropics/skills | How to create skills |
+| `webapp-testing` | anthropics/skills | Web app testing practices |
+| `react-best-practices` | vercel-labs/agent-skills | React performance & patterns |
+| `web-design-guidelines` | vercel-labs/agent-skills | Web design principles |
+
+**Sync Commands:**
+
+```bash
+# Sync all external skills
+bun run skills/_scripts/sync-external.ts
+
+# Rebuild SKILL.md files after adding custom rules
+bun run skills/_scripts/build.ts
+
+# Or use alias
+sync-skills
+```
 
 ---
 
@@ -375,6 +439,25 @@ Expected answer shape:
 - When to use: Finding solutions, checking library docs, researching bugs
 - When NOT to use: Questions answerable from codebase or memory
 - Note: No API key required
+
+**context7**
+- Purpose: AI-powered code context and intelligence
+- When to use: Complex code analysis, architecture understanding, refactoring assistance
+- When NOT to use: Simple tasks, basic file operations
+- Configuration:
+  ```json
+  {
+    "mcpServers": {
+      "context7": {
+        "url": "https://mcp.context7.com/mcp",
+        "headers": {
+          "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
+        }
+      }
+    }
+  }
+  ```
+- Note: Requires CONTEXT7_API_KEY environment variable for secure configuration
 
 ### MCP Selection Rules
 
