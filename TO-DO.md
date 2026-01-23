@@ -3,7 +3,7 @@
 ## Current
 
 - [ ] Optimize prompts for 2026 best practices
-- [ ] Split react/SKILL.md into smaller modules (<2000 lines each)
+- [x] Split react/SKILL.md into smaller modules (<2000 lines each)
 
 ## Backlog
 
