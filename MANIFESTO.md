@@ -186,7 +186,7 @@ test: [vitest/pytest/etc]
    - `.ai/TO-DO.md` (from template)
    - `.ai/plans/` directory
    - `.ai/notes/` directory
-3. **Verify** `.ai/` is in `.gitignore`
+3. **Verify** `.ai/` is in `.gitignore` (add `.ai/` to `.gitignore` if missing)
 4. **READ** in order:
    - `.ai/CONTEXT.md` (project fundamentals)
    - `.ai/MEMORY.md` (current state)
