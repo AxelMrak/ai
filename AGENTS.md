@@ -81,33 +81,119 @@ OBSERVE → ORIENT → PLAN → APPROVE → EXECUTE → DOCUMENT
 - Clean MEMORY.md (remove stale info)
 - Propose skill creation if pattern is reusable
 
-### 1.4 Skill Iteration Protocol
+### 1.4 Skill Protocol (CRITICAL)
 
-> Skills are codified best practices. Detect, create, and evolve them.
+> Skills are codified best practices. USE them, DETECT when user teaches, CREATE new ones.
 
-**Detection Triggers:**
-- Explicit: "siempre hago esto", "regla:", "buena practica:"
-- Implicit: User corrects agent output with a pattern
-- Repeated: Same pattern applied 3+ times in session
+#### 1.4.1 Skill Discovery & Usage (MANDATORY)
 
-**On Detection:**
-1. Recognize the teaching moment
-2. Confirm: "¿Querés que lo agregue como skill?"
-3. Clarify scope: Which skill set? New or existing?
-4. Preview the rule content
-5. Create in `skills/{skill-name}/rules/_custom-{name}.md`
-6. Run build script to regenerate SKILL.md
+**The Rule: If there's even 1% chance a skill applies, CHECK THE INDEX.**
 
-**Skill Usage:**
-- Check CONTEXT.md for project-relevant skills
-- Load skills on-demand (not all at once)
-- Apply skill rules during code review and generation
-- Suggest skill updates when finding better patterns
+**Before ANY response involving code, architecture, or technical decisions:**
 
-**Cross-Agent Skill Flow:**
-- ATHENA: Identifies patterns worth codifying during planning
-- APOLLO: Applies skills during implementation, notes gaps
-- HEFESTO: Discovers anti-patterns worth documenting as "don't do"
+1. **Scan** `skills/SKILL-INDEX.md` for relevant skills
+2. **Match** user request against skill names, triggers, categories
+3. **Load** the specific skill file (read `skills/{name}/SKILL.md`)
+4. **Announce** "Using [skill-name] for [purpose]"
+5. **Apply** the skill's rules and patterns
+6. **Never** skip this because "it's a simple question"
+
+**Red Flags (STOP - You're rationalizing):**
+
+| Thought | Reality |
+|---------|---------|
+| "This is just a simple question" | Simple questions have best practices too |
+| "I already know this" | Skills evolve. Read current version. |
+| "Let me explore the code first" | Skills tell you HOW to explore |
+| "This doesn't need a formal skill" | If a skill exists, use it |
+| "The skill is overkill" | Discipline prevents mistakes |
+
+**Skill Priority Order:**
+
+1. **Process skills first** (debugging, planning, tdd) - HOW to approach
+2. **Domain skills second** (react, python, stripe) - WHAT patterns to use
+3. **Integration skills last** (firebase, supabase) - HOW to connect
+
+**Token Economy:**
+- Index scan: ~500 tokens (always acceptable)
+- Skill load: 1000-5000 tokens (load max 2-3 per task)
+- Summarize skill in reasoning, don't quote entirely
+
+#### 1.4.2 Teaching Detection (USER → SKILL)
+
+**The user is TEACHING when they say:**
+
+| Signal | Example | Action |
+|--------|---------|--------|
+| Explicit rule | "siempre usá X", "regla:", "nunca hagas Y" | Confirm & create |
+| Correction | "no, hacelo así..." + shows pattern | Ask if should persist |
+| Preference | "prefiero X sobre Y porque..." | Note for skill |
+| Repeated pattern | Same correction 3+ times | Propose skill creation |
+| Best practice | "buena práctica:", "el estándar es..." | Confirm & create |
+| Style guide | "en este proyecto usamos..." | Add to project skill |
+
+**Detection Protocol:**
+
+1. **Recognize** the teaching moment (user explaining HOW, not WHAT)
+2. **Confirm intent**: "¿Querés que guarde esto como skill/rule?"
+3. **Clarify scope**:
+   - "¿Para qué lenguaje/framework?" (python, react, general)
+   - "¿Skill existente o nuevo?"
+   - "¿Solo este proyecto o global?"
+4. **Preview** the rule before creating
+5. **Create** in `skills/{skill-name}/rules/_custom-{name}.md`
+6. **Rebuild** index: `bun run skills/_scripts/generate-index.ts`
+
+**Rule File Format:**
+
+```markdown
+---
+title: Rule Title
+impact: HIGH | MEDIUM | LOW
+tags: tag1, tag2
+source: user-taught
+date: YYYY-MM-DD
+---
+
+## Rule Title
+
+[Why this matters]
+
+**Do:**
+```code```
+
+**Don't:**
+```code```
+```
+
+#### 1.4.3 Skill Maintenance
+
+**Cross-Agent Flow:**
+- **ATHENA**: Identifies patterns during planning, proposes skills
+- **APOLLO**: Applies skills during implementation, notes gaps
+- **HEFESTO**: Discovers anti-patterns, documents as "don't do"
+
+**When to Update Skills:**
+- User corrects skill-based output → Update the rule
+- Better pattern found → Propose update
+- Skill conflicts with project CONTEXT.md → Discuss with user
+
+**Skill Sources:**
+- `local`: Custom rules in `rules/_custom-*.md`
+- `external`: From anthropics/skills, vercel-labs (synced)
+- `antigravity`: From sickn33/antigravity-awesome-skills (bulk)
+
+**Commands:**
+```bash
+# Regenerate index after changes
+bun run skills/_scripts/generate-index.ts
+
+# Sync external sources
+bun run skills/_scripts/sync-external.ts
+
+# Build individual skill from rules/
+bun run skills/_scripts/build.ts
+```
 
 ### 1.5 File Creation Guidelines
 

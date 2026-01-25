@@ -465,8 +465,75 @@ bun run skills/_scripts/sync-external.ts
 # Rebuild SKILL.md files after adding custom rules
 bun run skills/_scripts/build.ts
 
+# Regenerate skill index
+bun run skills/_scripts/generate-index.ts
+
 # Or use alias
 sync-skills
+```
+
+### 4.12. Skill Index & Discovery Protocol
+
+> Skills are specialized knowledge modules. Use the index for discovery, load on-demand.
+
+**Skill Index Location:**
+
+- `skills/SKILL-INDEX.md` - Auto-generated master index (249+ skills)
+- Run `bun run skills/_scripts/generate-index.ts` to regenerate
+
+**Agent Discovery Protocol (MANDATORY):**
+
+1. **First**: Scan `skills/SKILL-INDEX.md` to identify relevant skills
+2. **Match**: Compare user request against skill triggers/keywords
+3. **Load**: Read only the specific skill folder when needed
+4. **Cache**: Don't reload same skill twice in session
+5. **Never**: Load all skills at once (token burn)
+
+**When to Consult the Index:**
+
+- User asks about a domain not in core memory
+- Task requires specialized knowledge (security, integrations, etc.)
+- Before implementing patterns that might have best practices
+- When CONTEXT.md lists skills for the project
+
+**Skill Categories (Quick Reference):**
+
+| Category | Examples | Use When |
+|----------|----------|----------|
+| AI Agents & LLM | langgraph, crewai, rag-engineer | Building AI features |
+| Development | react-patterns, nextjs-best-practices | Coding specific stacks |
+| Testing & QA | playwright-skill, tdd-workflow | Testing strategies |
+| Cybersecurity | pentest-*, ethical-hacking | Security audits |
+| Integrations | stripe, firebase, supabase | Third-party APIs |
+| Marketing | seo-*, cro-*, copywriting | Growth features |
+| Infrastructure | docker, aws-*, git-* | DevOps tasks |
+
+**Skill Sources:**
+
+| Source | Description | Sync |
+|--------|-------------|------|
+| local | Custom project skills | Manual |
+| external | anthropics/skills, vercel-labs | `sync-external.ts` |
+| antigravity | sickn33/antigravity-awesome-skills (240+) | Manual copy |
+
+**Token Economy for Skills:**
+
+- Index scan: ~500 tokens (acceptable)
+- Full skill load: 1000-5000 tokens each
+- Rule: Load max 2-3 skills per task
+- Summarize skill content in reasoning, don't quote entirely
+
+**Maintenance Commands:**
+
+```bash
+# Regenerate index after adding/removing skills
+bun run skills/_scripts/generate-index.ts
+
+# Update external sources (anthropics, vercel-labs)
+bun run skills/_scripts/sync-external.ts
+
+# Rebuild individual skill SKILL.md from rules/
+bun run skills/_scripts/build.ts
 ```
 
 ---
