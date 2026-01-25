@@ -1,6 +1,7 @@
 {
   "$schema": "./sources.schema.json",
   "_comment": "External skill sources. Run 'bun run skills/_scripts/sync-external.ts' to update.",
+  "_note": "antigravity skills (240+) are bulk-copied, not synced individually. See SKILL-INDEX.md for full list.",
   "sources": {
     "frontend-design": {
       "repo": "anthropics/skills",
@@ -27,6 +28,17 @@
       "repo": "vercel-labs/agent-skills",
       "path": "skills/web-design-guidelines",
       "branch": "main"
+    }
+  },
+  "bulk_sources": {
+    "antigravity-awesome-skills": {
+      "repo": "sickn33/antigravity-awesome-skills",
+      "path": "skills",
+      "branch": "main",
+      "sync_method": "manual_copy",
+      "last_synced": "2026-01-25",
+      "skills_count": 241,
+      "notes": "Clone repo and copy skills/* to local skills/. Run generate-index.ts after."
     }
   }
 }
