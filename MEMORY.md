@@ -69,6 +69,14 @@ Legend: ✅ Stable | 🚧 WIP | ❌ Needs Refactor
 
 ## 📝 Recent Changes
 
+- **Skill Protocol Overhaul (2026-01-25)**: 
+  - Rewrote AGENTS.md section 1.4 with comprehensive skill protocol
+  - Added mandatory skill discovery (1% rule: if might apply, check index)
+  - Added teaching detection (user says "siempre", "nunca", "regla" = create skill)
+  - Updated `using-superpowers` skill for our system (meta-skill that teaches skill usage)
+  
+- **Skill Library Expansion (2026-01-25)**: Integrated 241 skills from `sickn33/antigravity-awesome-skills`. Total skills: 249. Created `SKILL-INDEX.md` auto-generated index for agent discovery. Updated MANIFESTO with Skill Discovery Protocol (section 4.12).
+
 - **Inter-Agent Awareness Protocol**: Added comprehensive rules for agents to recognize when another agent is better suited for a task and proactively suggest handoffs. Includes HEFESTO as production gatekeeper with final review responsibilities.
 
 ## 🪙 Token Mode
