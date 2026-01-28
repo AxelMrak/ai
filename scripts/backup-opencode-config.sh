@@ -19,8 +19,12 @@ mkdir -p "$BACKUP_DIR"
 # Backup OpenCode config
 echo "1. Backing up OpenCode configuration..."
 if [ -f ~/.config/opencode/opencode.json ]; then
-  cp ~/.config/opencode/opencode.json "$BACKUP_DIR/opencode.json"
-  echo "   ✓ opencode.json"
+  # Sanitize config by replacing API keys with placeholders
+  cp ~/.config/opencode/opencode.json "$BACKUP_DIR/opencode.json.tmp"
+  sed -i '' 's/"CONTEXT7_API_KEY": "[^"]*"/"CONTEXT7_API_KEY": "your_key_here"/g' "$BACKUP_DIR/opencode.json.tmp"
+  sed -i '' 's/"BRAVE_API_KEY": "[^"]*"/"BRAVE_API_KEY": "your_key_here"/g' "$BACKUP_DIR/opencode.json.tmp"
+  mv "$BACKUP_DIR/opencode.json.tmp" "$BACKUP_DIR/opencode.json"
+  echo "   ✓ opencode.json (sanitized)"
 else
   echo "   ⚠ opencode.json not found"
 fi

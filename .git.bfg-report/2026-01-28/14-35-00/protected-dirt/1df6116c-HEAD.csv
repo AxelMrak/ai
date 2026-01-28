@@ -1,0 +1,7 @@
+d806cb992edb0846e43c9f3b293d077e66ca1a4f,DELETE,regular-file,backups/opencode-config-backup_20260128_124659.tar.gz,5665,
+e52d8dee5dab419f36db572ad3023382f44de269,DELETE,regular-file,backups/opencode-config-backup_20260128_124659/README.md,3177,
+7224d2970bbc9baccc4d337fdd435e486e02da41,DELETE,regular-file,backups/opencode-config-backup_20260128_124659/hooks.json,738,
+aefb7a38f8a1b20b38fb7cabad0d5208d1e1543d,DELETE,regular-file,backups/opencode-config-backup_20260128_124659/oh-my-opencode.json,4878,
+fda7f6847040e88bd7d0c5e197ae2ae799773b06,DELETE,regular-file,backups/opencode-config-backup_20260128_124659/opencode.json,6877,
+de29900010693447b6394435c175b57fe3b8b15b,DELETE,regular-file,backups/opencode-config-backup_20260128_124659/package.json,63,
+ee34537212bf8a616cf7452bac8f72bfbf04fe96,DELETE,executable,backups/opencode-config-backup_20260128_124659/restore.sh,1763,

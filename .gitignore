@@ -5,3 +5,8 @@ dist/
 .env
 .env.*
 .ai/
+backups/
+*.key
+*.pem
+secrets/
+config/local/
