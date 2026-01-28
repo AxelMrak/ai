@@ -91,10 +91,10 @@ If code requires “explanatory comments” to be understood, the agent should p
                               ▼
 ┌─────────────────────────────────────────────────────────────┐
 │  LAYER 2: Project Memory (Per-Project)                       │
-│  Location: .ai/CONTEXT.md + .ai/MEMORY.md                    │
-│  Content: Stack, architecture, current focus, decisions      │
-│  Update: Session checkpoints, major milestones               │
-│  Access: File read/write                                     │
+│  Location: .ai/CONTEXT.md + .ai/checkpoints/                 │
+│  Content: Stack, architecture, session history, decisions    │
+│  Update: Iterative checkpoints per session/milestone         │
+│  Access: File read/write, LATEST.md symlink                  │
 └─────────────────────────────────────────────────────────────┘
                               │
                               ▼
@@ -112,8 +112,11 @@ If code requires “explanatory comments” to be understood, the agent should p
 ```
 .ai/
 ├── CONTEXT.md             # Semi-static: stack, structure, patterns, ADRs
-├── MEMORY.md              # Dynamic: current focus, recent decisions
 ├── TO-DO.md               # Task tracking with status
+├── checkpoints/           # Timestamped session history (immutable)
+│   ├── 2026-01-28_15-30_oauth-implementation.md
+│   ├── 2026-01-29_10-15_refactor-user-service.md
+│   └── LATEST.md          # Symlink → most recent checkpoint
 ├── plans/                 # Collaborative work plans
 │   └── YYYY-MM-DD-{name}.md
 └── notes/                 # Technical notes, bugs, learnings
@@ -125,7 +128,8 @@ If code requires “explanatory comments” to be understood, the agent should p
 | File | Update Frequency | Owner | Content |
 |------|------------------|-------|---------|
 | `CONTEXT.md` | Rare (major changes) | ATHENA | Stack, structure, ADRs, patterns |
-| `MEMORY.md` | Every session | All | Current focus, recent decisions |
+| `checkpoints/*.md` | Every session/milestone | All | Immutable session history |
+| `checkpoints/LATEST.md` | Every checkpoint | System | Symlink to most recent checkpoint |
 | `TO-DO.md` | Constant | All | Tasks with status |
 | `plans/*.md` | Per feature/refactor | All | Collaborative plans |
 | `notes/*.md` | Ad-hoc | All | Bugs, decisions, learnings |
@@ -182,14 +186,14 @@ test: [vitest/pytest/etc]
 1. **Check** if `.ai/` folder exists in project root
 2. **If missing**, IMMEDIATELY propose creating:
    - `.ai/CONTEXT.md` (analyze project first)
-   - `.ai/MEMORY.md` (from template)
+   - `.ai/checkpoints/` directory with initial checkpoint
    - `.ai/TO-DO.md` (from template)
    - `.ai/plans/` directory
    - `.ai/notes/` directory
 3. **Verify** `.ai/` is in `.gitignore` (add `.ai/` to `.gitignore` if missing)
 4. **READ** in order:
    - `.ai/CONTEXT.md` (project fundamentals)
-   - `.ai/MEMORY.md` (current state)
+   - `.ai/checkpoints/LATEST.md` (current state & recent history)
    - Scan `.ai/plans/` for active work
 
 Do not proceed with ANY task until `.ai/` is verified and read.
@@ -200,9 +204,9 @@ Before starting any task, verify:
 
 - [ ] `.ai/` folder exists with all required files
 - [ ] `.ai/CONTEXT.md` has been read (know the stack)
-- [ ] `.ai/MEMORY.md` has been read (know the focus)
+- [ ] `.ai/checkpoints/LATEST.md` has been read (know current state)
 - [ ] `.ai/plans/` scanned for active plans
-- [ ] Current focus from MEMORY.md is understood
+- [ ] Current focus from LATEST checkpoint is understood
 - [ ] No conflicts with existing ADRs in CONTEXT.md
 - [ ] Relevant skills loaded based on CONTEXT.md
 - [ ] Blueprint Protocol will be followed
@@ -224,7 +228,7 @@ Modern token economy guidelines:
   - Load skills on-demand with `skill()`, not in initial prompt.
 - Use layered context:
   - MANIFESTO + AGENTS as foundational rules (read once per session).
-  - Project `.ai/MEMORY.md` as working context.
+  - Project `.ai/checkpoints/LATEST.md` as working context.
   - Current request + small retrieved snippets as immediate context.
 - Use summarization:
   - Convert long histories or search results into short, structured notes.
@@ -245,47 +249,195 @@ Advanced strategies:
   - Avoid restating large, unchanging fragments.
   - Cache: DB schemas, project structure, frequent rules.
 
-### 4.8. Checkpoint Protocol (After Major Refactors/Features)
+### 4.8. Checkpoint Protocol (Iterative Session History)
 
-When a major refactor or feature is completed (user explicitly states "we're done" or similar):
+> Checkpoints are immutable, timestamped snapshots of session progress. They replace MEMORY.md with a traceable, searchable history.
 
-1. **Review Git History:**
-   - Check last 15-20 commits in current branch
-   - Identify what was accomplished
-   - Look for patterns: new architecture, eliminated tech debt, new modules
+**Philosophy:**
+- Every checkpoint builds on the previous one (iteration)
+- Technical debt carries forward until resolved
+- Next steps from previous checkpoint inform current session
+- LATEST.md symlink provides current context
+- Full history enables debugging, rollback, and pattern analysis
 
-2. **Update `.ai/MEMORY.md`:**
-   - Add ONE concise section documenting the completed work
-   - Format: `## [PHASE-NAME] COMPLETED ✅` with bullet points
-   - Update project structure if it changed significantly
-   - Remove/update outdated technical debt mentions
-   - Keep it minimal - only essential context for future sessions
+**When to Create Checkpoints:**
 
-3. **Clean `.ai/TO-DO.md`:**
-   - If ALL tasks are completed: Reset to minimal template:
-     ```markdown
-     ## [PHASE-NAME] COMPLETED ✅
-     
-     Brief summary of what was accomplished.
-     
-     ---
-     
-     ## NEXT
-     
-     _Empty - Ready for new features or optimizations_
-     ```
-   - If some tasks remain: Move completed ones to a "COMPLETED" section at top
-   - Remove noise and outdated metrics
+| Trigger | Example | Auto/Manual |
+|---------|---------|-------------|
+| Feature completed | OAuth implemented and tested | Manual |
+| Refactor done | Auth layer refactored | Manual |
+| Bug fixed | Memory leak resolved | Manual |
+| Session end | User says "terminamos" | Manual |
+| Architecture change | ADR created, layers modified | Manual |
+| Major milestone | Phase 1 complete | Manual |
+| Auto-resume recovery | Session crashed, resuming | Auto |
 
-4. **Ask Before Applying:**
-   - Show proposed changes as diffs
-   - Wait for user confirmation ("Dale", "Go ahead")
-   - Never update silently
+**Checkpoint Naming Convention:**
 
-**Trigger conditions:**
-- User says: "terminamos", "we're done", "refactor complete", or similar
-- User explicitly asks to update memory/todo
-- Major milestone clearly reached (ask if unsure)
+```
+YYYY-MM-DD_HH-MM_short-description.md
+```
+
+Examples:
+- `2026-01-28_15-30_oauth-implementation.md`
+- `2026-01-29_09-15_refactor-auth-layer.md`
+- `2026-01-29_14-00_fix-memory-leak.md`
+
+**Checkpoint Template (Auto-generated by agents):**
+
+```markdown
+---
+date: YYYY-MM-DD
+time: HH:MM
+agent: ATHENA|APOLLO|HEFESTO
+feature: short-description
+status: IN_PROGRESS|COMPLETED|BLOCKED
+duration: Xh Ym
+checkpoint: filename.md
+previous: previous-checkpoint.md
+---
+
+## Session Summary
+[Concise summary: what was accomplished this session]
+
+## Changes Made
+- Added /api/auth/[...nextauth].ts route
+- Updated Prisma schema with Account/Session
+- Configured Google OAuth provider
+
+## Decisions (ADRs)
+- [ADR-015] NextAuth.js over custom OAuth (faster, battle-tested)
+- [ADR-016] JWT session strategy (stateless, scales)
+
+## Technical Debt (Iterative - carries forward)
+[Unresolved items from previous checkpoint]
+- TODO: Add refresh token rotation (from prev checkpoint)
+- TODO: Implement PKCE for mobile (from prev checkpoint)
+[New items this session]
+- TODO: Add E2E tests for auth flow
+- TODO: Document OAuth env vars
+
+## Files Modified
+- prisma/schema.prisma
+- src/pages/api/auth/[...nextauth].ts
+- src/lib/auth.ts
+- .env.local
+
+## Tests
+- ✅ Login flow working
+- ✅ Session persistence
+- ⚠️ Missing E2E tests for logout
+- ❌ No mobile PKCE tests yet
+
+## Next Steps
+[Based on TO-DO.md and completion status]
+- Implement refresh token rotation
+- Add E2E auth tests
+- Document OAuth setup in README
+
+---
+## Previous Context (Iteration)
+Previous checkpoint: 2026-01-28_10-30_setup-auth-structure.md
+
+Summary from previous:
+- Set up auth folder structure
+- Added placeholder routes
+- Configured Prisma for auth tables
+```
+
+**Checkpoint Creation Flow:**
+
+1. **Agent detects trigger** (completion, user request, crash recovery)
+2. **Agent**: "¿Creo checkpoint de esta sesión?" or auto-creates on crash
+3. **User**: "Dale" (approves) or auto-approved for recovery
+4. **Agent runs**:
+   ```bash
+   ~/Developer/ai/scripts/checkpoint-create.sh "description" "AGENT" "STATUS"
+   ```
+5. **Agent fills template** with session details
+6. **Agent carries forward** unresolved tech debt from previous checkpoint
+7. **Agent updates** LATEST.md symlink automatically
+8. **Agent updates** `.ai/TO-DO.md` (mark completed, add new)
+
+**Intelligent Iteration:**
+
+Checkpoints are NOT isolated - they form a chain:
+
+```
+Checkpoint N-1              Checkpoint N               Checkpoint N+1
+├─ Tech Debt: A, B     →   ├─ Tech Debt: B, C    →   ├─ Tech Debt: C
+├─ Next: Impl OAuth        ├─ DONE: OAuth impl       ├─ DONE: Tests
+└─ Status: IN_PROGRESS     ├─ Next: Add tests        └─ Next: Deploy
+                           └─ Status: COMPLETED
+```
+
+Agents MUST:
+- Read previous checkpoint before starting session
+- Carry forward unresolved items
+- Mark resolved items as DONE
+- Add new tech debt discovered
+- Update next steps based on current state
+
+**LATEST.md Symlink:**
+
+```bash
+# Always points to most recent checkpoint
+.ai/checkpoints/LATEST.md → 2026-01-29_14-00_fix-memory-leak.md
+
+# Context injection reads LATEST.md
+# Auto-resume uses LATEST.md for recovery
+# Agents reference LATEST.md for current state
+```
+
+**Searching & Analysis:**
+
+```bash
+# List recent checkpoints
+~/Developer/ai/scripts/checkpoint-list.sh
+
+# Search for auth-related sessions
+~/Developer/ai/scripts/checkpoint-search.sh "auth"
+
+# See what changed between sessions
+diff .ai/checkpoints/2026-01-28_15-30_oauth.md \
+     .ai/checkpoints/2026-01-29_10-15_oauth-fix.md
+
+# Find when bug was introduced
+grep -r "memory leak" .ai/checkpoints/
+
+# Analyze tech debt trends
+grep -h "Technical Debt" .ai/checkpoints/*.md | sort | uniq -c
+```
+
+**Auto-Resume Integration:**
+
+When `auto_resume` hook triggers after crash:
+
+1. Read `.ai/checkpoints/LATEST.md`
+2. Extract: last known state, next steps, tech debt
+3. Summarize for user: "Last session was working on X, completed Y, next was Z"
+4. Ask: "¿Continúo desde donde quedó?"
+5. Create new checkpoint with status: RESUMED
+6. Continue from last known good state
+
+**Migration from MEMORY.md:**
+
+If project has existing `.ai/MEMORY.md`:
+
+1. Create first checkpoint from MEMORY.md content
+2. Filename: `YYYY-MM-DD_HH-MM_migrated-from-memory.md`
+3. Preserve all content in Session Summary
+4. Extract tech debt, decisions, next steps into proper sections
+5. Create LATEST.md symlink
+6. Move MEMORY.md → MEMORY.md.deprecated
+7. Update context_injection to use LATEST.md
+
+**Checkpoint Maintenance:**
+
+- **Keep ALL checkpoints** (disk is cheap, context is expensive)
+- Archive old checkpoints (>6 months) to `.ai/checkpoints/archive/` if needed
+- Never delete - they're debugging gold
+- Compress if size becomes issue: `tar -czf checkpoints-2025.tar.gz 2025-*.md`
 
 ### 4.9. Context Iteration Protocol (CRITICAL)
 
@@ -293,7 +445,7 @@ When a major refactor or feature is completed (user explicitly states "we're don
 
 **Mandatory Re-read Triggers:**
 
-Before these actions, ALWAYS re-read `.ai/MEMORY.md` and `.ai/TO-DO.md`:
+Before these actions, ALWAYS re-read `.ai/checkpoints/LATEST.md` and `.ai/TO-DO.md`:
 
 1. **Planning requests**: "hagamos un plan", "planifiquemos", "quiero hacer X"
 2. **Feature requests**: "agreguemos", "implementemos", "nueva feature"
@@ -306,10 +458,10 @@ Before these actions, ALWAYS re-read `.ai/MEMORY.md` and `.ai/TO-DO.md`:
 **Iteration Behavior:**
 
 - **Before proposing ANY plan**: Check TO-DO.md for existing plans/context
-- **Before starting ANY task**: Verify it aligns with MEMORY.md focus
+- **Before starting ANY task**: Verify it aligns with LATEST checkpoint focus
 - **After user approves a plan**: Propose TO-DO.md update with the plan details
-- **After completing work**: Propose MEMORY.md update with outcomes
-- **On context switch**: Summarize current state, re-read `.ai/`, adapt
+- **After completing work**: Create new checkpoint with session outcomes
+- **On context switch**: Create checkpoint, summarize current state, re-read `.ai/`, adapt
 
 **TO-DO.md Structure (Enforced):**
 
@@ -330,8 +482,9 @@ Each planned task MUST include:
 **Anti-Pattern (DO NOT DO):**
 - Reading `.ai/` once and never again = VIOLATION
 - Proposing plans without checking TO-DO.md = VIOLATION
-- Ignoring existing context in MEMORY.md = VIOLATION
+- Ignoring existing context in LATEST checkpoint = VIOLATION
 - Starting work without verifying alignment = VIOLATION
+- Forgetting to create checkpoint on completion = VIOLATION
 
 ### 4.10. Skill Detection Protocol
 
