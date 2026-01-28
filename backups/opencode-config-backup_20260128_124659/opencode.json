@@ -1,0 +1,269 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "autoupdate": true,
+  "default_agent": "athena",
+  "plugin": [
+    "opencode-google-antigravity-auth",
+    "@franlol/opencode-md-table-formatter@0.0.3",
+    "oh-my-opencode"
+  ],
+  "watcher": {
+    "ignore": [
+      "node_modules/**",
+      "dist/**",
+      "build/**",
+      ".git/**"
+    ]
+  },
+  "provider": {
+    "google": {
+      "name": "Google",
+      "models": {
+        "antigravity-gemini-3-pro": {
+          "name": "Gemini 3 Pro (Antigravity)",
+          "limit": {
+            "context": 1048576,
+            "output": 65535
+          },
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "pdf"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "variants": {
+            "low": {
+              "thinkingLevel": "low"
+            },
+            "high": {
+              "thinkingLevel": "high"
+            }
+          }
+        },
+        "antigravity-gemini-3-flash": {
+          "name": "Gemini 3 Flash (Antigravity)",
+          "limit": {
+            "context": 1048576,
+            "output": 65536
+          },
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "pdf"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "variants": {
+            "minimal": {
+              "thinkingLevel": "minimal"
+            },
+            "low": {
+              "thinkingLevel": "low"
+            },
+            "medium": {
+              "thinkingLevel": "medium"
+            },
+            "high": {
+              "thinkingLevel": "high"
+            }
+          }
+        },
+        "antigravity-claude-sonnet-4-5": {
+          "name": "Claude Sonnet 4.5 (Antigravity)",
+          "limit": {
+            "context": 200000,
+            "output": 64000
+          },
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "pdf"
+            ],
+            "output": [
+              "text"
+            ]
+          }
+        },
+        "antigravity-claude-sonnet-4-5-thinking": {
+          "name": "Claude Sonnet 4.5 Thinking (Antigravity)",
+          "limit": {
+            "context": 200000,
+            "output": 64000
+          },
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "pdf"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "variants": {
+            "low": {
+              "thinkingConfig": {
+                "thinkingBudget": 8192
+              }
+            },
+            "max": {
+              "thinkingConfig": {
+                "thinkingBudget": 32768
+              }
+            }
+          }
+        },
+        "antigravity-claude-opus-4-5-thinking": {
+          "name": "Claude Opus 4.5 Thinking (Antigravity)",
+          "limit": {
+            "context": 200000,
+            "output": 64000
+          },
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "pdf"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "variants": {
+            "low": {
+              "thinkingConfig": {
+                "thinkingBudget": 8192
+              }
+            },
+            "max": {
+              "thinkingConfig": {
+                "thinkingBudget": 32768
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "mcp": {
+    "fast-filesystem": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "fast-filesystem-mcp"
+      ],
+      "environment": {
+        "CREATE_BACKUP_FILES": "true"
+      }
+    },
+    "next-devtools": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "next-devtools-mcp@latest"
+      ]
+    },
+    "playwright": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@anthropic/mcp-server-playwright"
+      ]
+    },
+    "ddg-search": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@oevortex/ddg_search"
+      ]
+    },
+    "context7": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "context7-mcp"
+      ],
+      "environment": {
+        "CONTEXT7_API_KEY": "ctx7sk-5564b6e1-e195-4759-99dc-841b929f72df"
+      }
+    },
+    "git": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-git"
+      ]
+    },
+    "memory": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ]
+    },
+    "sequential-thinking": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
+    },
+    "brave-search": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-brave-search"
+      ],
+      "environment": {
+        "BRAVE_API_KEY": ""
+      }
+    }
+  },
+  "agent": {
+    "athena": {
+      "mode": "primary",
+      "description": "Daily Strategic Mentor. Strict Architect. Guide > Do. Blueprint-first.",
+      "prompt": "ATHENA: Principal Architect. Strict. Guide > Do.\n\nMANDATORY FIRST ACTIONS:\n1. Check .ai/ folder exists (create if missing)\n2. Read .ai/MEMORY.md\n3. Read ~/Developer/ai/MANIFESTO.md (rules)\n4. Read ~/Developer/ai/AGENTS.md (protocol)\n\nUse skill() for domain rules. Blueprint Protocol always.\nAsk \"¿Le mando mecha?\" before any edit.",
+      "tools": {
+        "write": true,
+        "edit": true
+      }
+    },
+    "apollo": {
+      "mode": "primary",
+      "description": "Architectural Educator. Harmony & Logic. Explains trade-offs and patterns.",
+      "prompt": "APOLLO: Senior Educator. Calm. Teach > Fix.\n\nMANDATORY FIRST ACTIONS:\n1. Check .ai/ folder exists (create if missing)\n2. Read .ai/MEMORY.md\n3. Read ~/Developer/ai/MANIFESTO.md (rules)\n4. Read ~/Developer/ai/AGENTS.md (protocol)\n\nUse skill() for domain rules. Observe → Diagnose → Blueprint.\nWait for approval before execution.",
+      "tools": {
+        "write": true,
+        "edit": true
+      }
+    },
+    "hefesto": {
+      "mode": "primary",
+      "description": "Senior Debugger. Patient. Diagnose > Fix.",
+      "prompt": "HEFESTO: Senior Debugger. Patient. Diagnose > Fix.\n\nMANDATORY FIRST ACTIONS:\n1. Check .ai/ folder exists (create if missing)\n2. Read .ai/MEMORY.md\n3. Read ~/Developer/ai/MANIFESTO.md (rules)\n4. Read ~/Developer/ai/AGENTS.md (protocol)\n\nUse skill() for domain rules. Symptom → Trace → Root Cause → Fix.\nDocument findings before fixing.",
+      "tools": {
+        "write": true,
+        "edit": true,
+        "skill": true
+      }
+    }
+  }
+}
