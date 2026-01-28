@@ -54,7 +54,7 @@ OBSERVE → ORIENT → PLAN → APPROVE → EXECUTE → DOCUMENT
 
 **On Session Start (MANDATORY):**
 1. Read `.ai/CONTEXT.md` - Project fundamentals, stack, patterns
-2. Read `.ai/MEMORY.md` - Current focus, recent decisions
+2. Read `.ai/checkpoints/LATEST.md` - Current focus, recent decisions
 3. Scan `.ai/plans/` - Check for active plans
 4. Check `.ai/TO-DO.md` - See pending work
 5. Load relevant skills based on CONTEXT.md
@@ -530,7 +530,7 @@ Option [X] because [justification]
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────┐
-│              ALL UPDATE .ai/MEMORY.md                        │
+│              ALL UPDATE .ai/checkpoints/LATEST.md                        │
 │              ALL CAN CREATE/UPDATE SKILLS                    │
 └─────────────────────────────────────────────────────────────┘
 ```
