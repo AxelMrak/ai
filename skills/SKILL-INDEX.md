@@ -1,7 +1,7 @@
 # SKILL INDEX
 
 > Auto-generated. Run: `bun run skills/_scripts/generate-index.ts`
-> Updated: 2026-02-17 | Total: 263 skills
+> Updated: 2026-02-17 | Total: 264 skills
 
 ## Usage
 
@@ -231,12 +231,13 @@
 | `schema-markup` | When the user wants to add, fix, or optimize schema markup and structured dat... | the user mentions |
 | `wireshark-analysis` | This skill should be used when the user asks to | - |
 
-### General (8)
+### General (9)
 
 | Skill | Description | Triggers |
 |-------|-------------|----------|
 | `analytics-tracking` | When the user wants to set up, improve, or audit analytics tracking and measu... | the user mentions |
 | `blockrun` | Use when user needs capabilities Claude lacks (image generation, real-time X/... | - |
+| `mercadopago-integration` | > | - |
 | `performance-profiling` | Performance profiling principles. Measurement, analysis, and optimization tec... | - |
 | `postgres-best-practices` | > Generated: 2026-02-17 | - |
 | `red-team-tactics` | Red team tactics principles based on MITRE ATT&CK. Attack phases, detection e... | - |
@@ -353,7 +354,7 @@
 ## Full Registry
 
 <details>
-<summary>All 263 skills</summary>
+<summary>All 264 skills</summary>
 
 | Skill | Category | Path | Source |
 |-------|----------|------|--------|
@@ -543,6 +544,7 @@
 | wireshark-analysis | Game Development | skills/wireshark-analysis | antigravity |
 | analytics-tracking | General | skills/analytics-tracking | antigravity |
 | blockrun | General | skills/blockrun | antigravity |
+| mercadopago-integration | General | skills/mercadopago-integration | external |
 | performance-profiling | General | skills/performance-profiling | antigravity |
 | postgres-best-practices | General | skills/postgres-best-practices | antigravity |
 | red-team-tactics | General | skills/red-team-tactics | antigravity |

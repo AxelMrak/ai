@@ -74,6 +74,11 @@
       "path": "skills/supabase-postgres-best-practices",
       "branch": "main"
     },
+    "mercadopago-integration": {
+      "repo": "martinacostadev/mercadopago-integration",
+      "path": "mercadopago-integration",
+      "branch": "master"
+    },
     "find-skills": {
       "repo": "vercel-labs/skills",
       "path": "find-skills",
