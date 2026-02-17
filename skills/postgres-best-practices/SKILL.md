@@ -1,5 +1,5 @@
 # POSTGRES-BEST-PRACTICES
-> Generated: 2026-01-25
+> Generated: 2026-02-17
 > Rules: 33 across 8 modules
 
 ## Modules

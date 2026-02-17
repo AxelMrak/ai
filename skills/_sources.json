@@ -28,6 +28,56 @@
       "repo": "vercel-labs/agent-skills",
       "path": "skills/web-design-guidelines",
       "branch": "main"
+    },
+    "agent-browser": {
+      "repo": "vercel-labs/agent-browser",
+      "path": "skills/agent-browser",
+      "branch": "main"
+    },
+    "vercel-composition-patterns": {
+      "repo": "vercel-labs/agent-skills",
+      "path": "skills/composition-patterns",
+      "branch": "main"
+    },
+    "vercel-react-native-skills": {
+      "repo": "vercel-labs/agent-skills",
+      "path": "skills/react-native-skills",
+      "branch": "main"
+    },
+    "browser-use": {
+      "repo": "browser-use/browser-use",
+      "path": "skills/browser-use",
+      "branch": "main"
+    },
+    "chatgpt-app-builder": {
+      "repo": "mcp-use/mcp-use",
+      "path": "skills/chatgpt-app-builder",
+      "branch": "main"
+    },
+    "just-scrape": {
+      "repo": "ScrapeGraphAI/just-scrape",
+      "path": "skills/just-scrape",
+      "branch": "main"
+    },
+    "next-best-practices": {
+      "repo": "vercel-labs/next-skills",
+      "path": "skills/next-best-practices",
+      "branch": "main"
+    },
+    "audit-website": {
+      "repo": "squirrelscan/skills",
+      "path": "audit-website",
+      "branch": "main"
+    },
+    "supabase-postgres-best-practices": {
+      "repo": "supabase/agent-skills",
+      "path": "skills/supabase-postgres-best-practices",
+      "branch": "main"
+    },
+    "find-skills": {
+      "repo": "vercel-labs/skills",
+      "path": "find-skills",
+      "branch": "main"
     }
   },
   "bulk_sources": {

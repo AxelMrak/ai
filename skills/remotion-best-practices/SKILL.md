@@ -1,5 +1,5 @@
 # REMOTION-BEST-PRACTICES
-> Generated: 2026-01-25
+> Generated: 2026-02-17
 > Rules: 28 across 25 modules
 
 ## Modules

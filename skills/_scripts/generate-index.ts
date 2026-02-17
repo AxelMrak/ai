@@ -3,6 +3,7 @@ import { join } from "path"
 
 const SKILLS_ROOT = join(import.meta.dir, "..")
 const INDEX_FILE = join(SKILLS_ROOT, "SKILL-INDEX.md")
+const SOURCES_FILE = join(SKILLS_ROOT, "_sources.json")
 
 interface SkillMeta {
   name: string
@@ -11,6 +12,10 @@ interface SkillMeta {
   category: string
   path: string
   source: "local" | "external" | "antigravity"
+}
+
+interface SourcesConfig {
+  sources: Record<string, unknown>
 }
 
 const CATEGORY_MAP: Record<string, string> = {
@@ -148,7 +153,15 @@ const CATEGORY_MAP: Record<string, string> = {
 }
 
 const LOCAL_SKILLS = ["general", "python", "react"]
-const EXTERNAL_SKILLS = ["frontend-design", "skill-creator", "webapp-testing", "react-best-practices", "web-design-guidelines"]
+
+async function loadExternalSkills(): Promise<Set<string>> {
+  try {
+    const config = (await Bun.file(SOURCES_FILE).json()) as SourcesConfig
+    return new Set(Object.keys(config.sources || {}))
+  } catch {
+    return new Set()
+  }
+}
 
 function detectCategory(name: string, description: string): string {
   const combined = `${name} ${description}`.toLowerCase()
@@ -184,7 +197,7 @@ function extractTriggers(description: string): string[] {
   return [...new Set(triggers)].slice(0, 5)
 }
 
-async function extractSkillMeta(skillPath: string, skillName: string): Promise<SkillMeta | null> {
+async function extractSkillMeta(skillPath: string, skillName: string, externalSkills: Set<string>): Promise<SkillMeta | null> {
   const possibleFiles = ["SKILL.md", "README.md", "index.md"]
   let description = ""
 
@@ -209,7 +222,7 @@ async function extractSkillMeta(skillPath: string, skillName: string): Promise<S
 
   let source: "local" | "external" | "antigravity" = "antigravity"
   if (LOCAL_SKILLS.includes(skillName)) source = "local"
-  else if (EXTERNAL_SKILLS.includes(skillName)) source = "external"
+  else if (externalSkills.has(skillName)) source = "external"
 
   return {
     name: skillName,
@@ -226,6 +239,7 @@ async function generateIndex(): Promise<void> {
 
   const entries = await readdir(SKILLS_ROOT)
   const skills: SkillMeta[] = []
+  const externalSkills = await loadExternalSkills()
 
   for (const entry of entries) {
     if (entry.startsWith("_") || entry.startsWith(".") || entry.endsWith(".md") || entry.endsWith(".json")) {
@@ -236,7 +250,7 @@ async function generateIndex(): Promise<void> {
     const entryStat = await stat(entryPath)
 
     if (entryStat.isDirectory()) {
-      const meta = await extractSkillMeta(entryPath, entry)
+      const meta = await extractSkillMeta(entryPath, entry, externalSkills)
       if (meta) {
         skills.push(meta)
         console.log(`  ${entry} -> ${meta.category}`)

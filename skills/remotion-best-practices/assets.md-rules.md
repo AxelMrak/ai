@@ -1,5 +1,5 @@
 # REMOTION-BEST-PRACTICES - ASSETS.MD
-> Generated: 2026-01-25
+> Generated: 2026-02-17
 > Rules: 1
 
 
