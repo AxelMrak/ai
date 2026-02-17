@@ -627,29 +627,109 @@ sync-skills
 
 ### 4.12. Skill Index & Discovery Protocol
 
-> Skills are specialized knowledge modules. Use the index for discovery, load on-demand.
+> Skills are specialized knowledge modules. Use native tools for discovery, load on-demand.
 
 **Skill Index Location:**
 
-- `skills/SKILL-INDEX.md` - Auto-generated master index (249+ skills)
+- `~/Developer/ai/skills/SKILL-INDEX.md` - Auto-generated master index (249+ skills)
 - Run `bun run skills/_scripts/generate-index.ts` to regenerate
 
-**Agent Discovery Protocol (MANDATORY):**
+#### 4.12.1 The Problem
 
-1. **First**: Scan `skills/SKILL-INDEX.md` to identify relevant skills
-2. **Match**: Compare user request against skill triggers/keywords
-3. **Load**: Read only the specific skill folder when needed
-4. **Cache**: Don't reload same skill twice in session
-5. **Never**: Load all skills at once (token burn)
+Scanning 249+ skills every session wastes tokens. Most projects only need 5-10 skills.
 
-**When to Consult the Index:**
+#### 4.12.2 The Solution: Stack-Based Caching
 
-- User asks about a domain not in core memory
-- Task requires specialized knowledge (security, integrations, etc.)
-- Before implementing patterns that might have best practices
-- When CONTEXT.md lists skills for the project
+**Step 1: Read Project Stack (ONCE per project)**
 
-**Skill Categories (Quick Reference):**
+On first session with a project, extract stack from:
+1. `.ai/CONTEXT.md` → `## Stack` section
+2. `package.json` → dependencies
+3. File extensions → `.tsx`, `.py`, etc.
+
+**Step 2: Map Stack to Skills**
+
+| Stack Signal | Skills to Load |
+|--------------|----------------|
+| `react`, `.tsx`, `.jsx` | `react-patterns`, `react-ui-patterns` |
+| `next`, `next.js` | `nextjs-best-practices`, `vercel-deployment` |
+| `python`, `.py` | `python-patterns` |
+| `prisma` | `prisma-expert`, `database-design` |
+| `stripe` | `stripe-integration` |
+| `supabase` | `nextjs-supabase-auth` |
+| `clerk` | `clerk-auth` |
+| `firebase` | `firebase` |
+| `tailwind` | `tailwind-patterns` |
+| `typescript` | `typescript-expert` |
+| `docker` | `docker-expert` |
+| `test`, `jest`, `vitest` | `testing-patterns`, `tdd-workflow` |
+
+**Step 3: Cache in CONTEXT.md**
+
+After discovering relevant skills, add to `.ai/CONTEXT.md`:
+
+```markdown
+## Active Skills
+
+> Auto-discovered based on project stack. Updated: YYYY-MM-DD
+
+| Skill | Purpose | Last Used |
+|-------|---------|-----------|
+| react-patterns | React component patterns | 2026-01-30 |
+| nextjs-best-practices | App Router, Server Components | 2026-01-30 |
+| prisma-expert | Database operations | 2026-01-29 |
+| systematic-debugging | Root cause analysis | ALWAYS |
+```
+
+**Step 4: On Subsequent Sessions**
+
+1. Read `.ai/CONTEXT.md` → `## Active Skills`
+2. If section exists: Load cached skills with `Read` tool
+3. If section missing: Run full discovery (Steps 1-3)
+4. If new tech detected: Add to Active Skills
+
+#### 4.12.3 Native Tool Discovery (NO PLUGINS)
+
+Use built-in tools for skill discovery:
+
+```bash
+# Find skills by keyword - use Grep on SKILL-INDEX.md
+Grep("react performance", path="~/Developer/ai/skills/SKILL-INDEX.md")
+
+# Load specific skill - use Read tool
+Read("~/Developer/ai/skills/react-patterns/SKILL.md")
+
+# Search for skill resources
+Glob("~/Developer/ai/skills/react-patterns/**/*.md")
+```
+
+**Discovery Flow:**
+
+1. **Search**: `Grep` in `SKILL-INDEX.md` for relevant keywords
+2. **Identify**: Find skill names that match the task
+3. **Load**: `Read` the specific `skills/{name}/SKILL.md` file
+4. **Apply**: Use the skill's patterns and rules
+5. **Cache**: Add to CONTEXT.md `## Active Skills` section
+
+#### 4.12.4 When to Re-Discover
+
+- New dependency added to package.json
+- New file type introduced (.py in a JS project)
+- User explicitly asks to check for skills
+- Error suggests missing pattern knowledge
+
+#### 4.12.5 Token Budget
+
+| Action | Tokens | Frequency |
+|--------|--------|-----------|
+| Read CONTEXT.md | ~200 | Every session |
+| Load cached skills | ~1000-3000 | Every session |
+| Grep SKILL-INDEX.md | ~500 | Only on new projects |
+| Full index scan | ~2000 | Rarely |
+
+**Expected savings: 80%+ vs scanning full index every time**
+
+#### 4.12.6 Skill Categories (Quick Reference)
 
 | Category | Examples | Use When |
 |----------|----------|----------|
@@ -661,7 +741,7 @@ sync-skills
 | Marketing | seo-*, cro-*, copywriting | Growth features |
 | Infrastructure | docker, aws-*, git-* | DevOps tasks |
 
-**Skill Sources:**
+#### 4.12.7 Skill Sources
 
 | Source | Description | Sync |
 |--------|-------------|------|
@@ -669,12 +749,10 @@ sync-skills
 | external | anthropics/skills, vercel-labs | `sync-external.ts` |
 | antigravity | sickn33/antigravity-awesome-skills (240+) | Manual copy |
 
-**Token Economy for Skills:**
+#### 4.12.8 The Golden Rule
 
-- Index scan: ~500 tokens (acceptable)
-- Full skill load: 1000-5000 tokens each
-- Rule: Load max 2-3 skills per task
-- Summarize skill content in reasoning, don't quote entirely
+> Scan once, cache forever, update incrementally.
+> Never scan 249 skills when 8 will do.
 
 **Maintenance Commands:**
 
