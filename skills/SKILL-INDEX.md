@@ -1,7 +1,7 @@
 # SKILL INDEX
 
 > Auto-generated. Run: `bun run skills/_scripts/generate-index.ts`
-> Updated: 2026-02-19 | Total: 265 skills
+> Updated: 2026-02-19 | Total: 259 skills
 
 ## Source of Truth
 
@@ -16,15 +16,9 @@
 3. Load skill by directory id (first column)
 4. Use canonical alias column if name collisions exist
 
-## Local Custom Skills
-
-| Skill ID | Canonical Alias | Description | Triggers |
-|----------|------------------|-------------|----------|
-| `axel-code-forge` | - | Axel's coding conventions for React/Next.js: no relative imports, no hardcoded values, reusable components/functions, and strict project consistency. | conventions, standards, react, next.js, refactor, cleanup |
-
 ## By Category
 
-### AI Agents & LLM (98)
+### AI Agents & LLM (99)
 
 | Skill ID | Canonical Alias | Description | Triggers |
 |----------|------------------|-------------|----------|
@@ -43,6 +37,7 @@
 | `audit-website` | - | Audit websites for SEO, performance, security, technical, content, and 15 oth... | - |
 | `autonomous-agent-patterns` | - | Design patterns for building autonomous coding agents. Covers tool integratio... | building ai agents, designing tool apis |
 | `autonomous-agents` | - | Autonomous agents are AI systems that can independently decompose goals, plan... | - |
+| `axel-code-forge` | - | Use when enforcing Axel's coding standards across any language for architectu... | reuse, imports, and maintainability |
 | `behavioral-modes` | - | AI operational modes (brainstorm, implement, debug, review, teach, ship, orch... | - |
 | `brainstorming` | - | Use this skill before any creative or constructive work (features, components... | - |
 | `browser-automation` | - | Browser automation powers web testing, scraping, and AI agent interactions. T... | - |
@@ -135,7 +130,7 @@
 | `skill-detection` | - | Detect, load, and apply skills before ANY code-related response | - |
 | `teaching-detection` | - | Detect when user is teaching best practices and persist as skills | - |
 
-### Creative & Design (29)
+### Creative & Design (28)
 
 | Skill ID | Canonical Alias | Description | Triggers |
 |----------|------------------|-------------|----------|
@@ -143,7 +138,6 @@
 | `architecture` | - | Architectural decision-making framework. Requirements analysis, trade-off eva... | - |
 | `avalonia-layout-zafiro` | - | Guidelines for modern Avalonia UI layout using Zafiro.Avalonia, emphasizing s... | - |
 | `avalonia-zafiro-development` | - | Mandatory skills, conventions, and behavioral rules for Avalonia UI developme... | - |
-| `brand-guidelines-anthropic` | - | Applies Anthropic's official brand colors and typography to any sort of artif... | - |
 | `brand-guidelines-community` | brand-guidelines-anthropic | Applies Anthropic's official brand colors and typography to any sort of artif... | - |
 | `browser-extension-builder` | - | Expert in building browser extensions that solve real problems - Chrome, Fire... | browser extension, chrome extension, firefox addon |
 | `busybox-on-windows` | - | How to use a Win32 build of BusyBox to run many of the standard UNIX command ... | - |
@@ -232,7 +226,7 @@
 | `supabase-postgres-best-practices` | - | Postgres performance optimization and best practices from Supabase. Use this ... | - |
 | `tavily-web` | - | Web search, content extraction, crawling, and research capabilities using Tav... | - |
 | `telegram-mini-app` | - | Expert in building Telegram Mini Apps (TWA) - web apps that run inside Telegr... | telegram mini app, twa, telegram web app |
-| `typescript-expert` | - | >- | - |
+| `typescript-expert` | - | TypeScript and JavaScript expert with deep knowledge of type-level programmin... | - |
 | `vercel-deployment` | - | Expert knowledge for deploying to Vercel with Next.js Use when: vercel, deplo... | vercel, deploy, deployment |
 | `vercel-react-native-skills` | - | React Native performance and architecture guidelines from Vercel patterns. | - |
 | `web-performance-optimization` | - | Optimize website and web application performance including loading speed, Cor... | - |
@@ -281,42 +275,37 @@
 | `clerk-auth` | - | Expert patterns for Clerk auth implementation, middleware, organizations, web... | adding authentication, clerk auth, user authentication |
 | `segment-cdp` | - | Expert patterns for Segment Customer Data Platform including Analytics.js, se... | segment, analytics |
 
-### Maker Tools (3)
+### Maker Tools (2)
 
 | Skill ID | Canonical Alias | Description | Triggers |
 |----------|------------------|-------------|----------|
 | `app-store-optimization` | - | Complete App Store Optimization (ASO) toolkit for researching, optimizing, an... | - |
 | `pdf` | pdf-official | Comprehensive PDF manipulation toolkit for extracting text and tables, creati... | - |
-| `pdf-official` | - | Comprehensive PDF manipulation toolkit for extracting text and tables, creati... | - |
 
-### Marketing & Growth (17)
+### Marketing & Growth (14)
 
 | Skill ID | Canonical Alias | Description | Triggers |
 |----------|------------------|-------------|----------|
 | `competitor-alternatives` | - | When the user wants to create competitor comparison or alternative pages for ... | ' 'vs page, ' 'competitor comparison, ' 'comparison page |
 | `copy-editing` | - | When the user wants to edit, review, or improve existing marketing copy. Also... | ' 'review my copy, ' 'copy feedback, ' 'proofread |
 | `docx` | docx-official | Comprehensive document creation, editing, and analysis with support for track... | - |
-| `docx-official` | - | Comprehensive document creation, editing, and analysis with support for track... | - |
 | `file-organizer` | - | Intelligently organizes files and folders by understanding context, finding d... | organize downloads, remove duplicates, or restructure projects |
 | `marketing-ideas` | - | When the user needs marketing ideas, inspiration, or strategies for their Saa... | ' 'growth ideas, ' 'how to market, ' 'marketing strategies |
 | `marketing-psychology` | - | When the user wants to apply psychological principles, mental models, or beha... | the user mentions 'psychology, ' 'mental models, ' 'cognitive bias |
 | `page-cro` | - | When the user wants to optimize, improve, or increase conversions on any mark... | the user says "cro, " "this page isn't converting, " "improve conversions |
 | `pptx` | pptx-official | Presentation creation, editing, and analysis. When Claude needs to work with ... | - |
-| `pptx-official` | - | Presentation creation, editing, and analysis. When Claude needs to work with ... | - |
 | `pricing-strategy` | - | When the user wants help with pricing decisions, packaging, or monetization s... | the user mentions 'pricing, ' 'pricing tiers, ' 'freemium |
 | `schema-markup` | - | When the user wants to add, fix, or optimize schema markup and structured dat... | " "structured data, " "json-ld, " "rich snippets |
 | `seo-fundamentals` | - | SEO fundamentals, E-E-A-T, Core Web Vitals, and Google algorithm principles. | - |
 | `signup-flow-cro` | - | When the user wants to optimize signup, registration, account creation, or tr... | " "registration friction, " "signup form optimization, " "free trial signup |
 | `social-content` | - | When the user wants help creating, scheduling, or optimizing social media con... | ' 'twitter thread, ' 'social media, ' 'content calendar |
 | `xlsx` | xlsx-official | Comprehensive spreadsheet creation, editing, and analysis with support for fo... | - |
-| `xlsx-official` | - | Comprehensive spreadsheet creation, editing, and analysis with support for fo... | - |
 
-### Product & Strategy (2)
+### Product & Strategy (1)
 
 | Skill ID | Canonical Alias | Description | Triggers |
 |----------|------------------|-------------|----------|
 | `internal-comms-anthropic` | - | A set of resources to help me write all kinds of internal communications, usi... | - |
-| `internal-comms-community` | internal-comms-anthropic | A set of resources to help me write all kinds of internal communications, usi... | - |
 
 ### Testing & QA (27)
 
@@ -361,7 +350,7 @@
 ## Full Registry
 
 <details>
-<summary>All 264 skills</summary>
+<summary>All 259 skills</summary>
 
 | Skill ID | Frontmatter Name | Canonical Alias | Category | Path | Source |
 |----------|------------------|------------------|----------|------|--------|
@@ -380,6 +369,7 @@
 | audit-website | audit-website | audit-website | AI Agents & LLM | skills/audit-website | external |
 | autonomous-agent-patterns | autonomous-agent-patterns | autonomous-agent-patterns | AI Agents & LLM | skills/autonomous-agent-patterns | antigravity |
 | autonomous-agents | autonomous-agents | autonomous-agents | AI Agents & LLM | skills/autonomous-agents | antigravity |
+| axel-code-forge | axel-code-forge | axel-code-forge | AI Agents & LLM | skills/axel-code-forge | antigravity |
 | behavioral-modes | behavioral-modes | behavioral-modes | AI Agents & LLM | skills/behavioral-modes | antigravity |
 | brainstorming | brainstorming | brainstorming | AI Agents & LLM | skills/brainstorming | antigravity |
 | browser-automation | browser-automation | browser-automation | AI Agents & LLM | skills/browser-automation | antigravity |
@@ -470,7 +460,6 @@
 | architecture | architecture | architecture | Creative & Design | skills/architecture | antigravity |
 | avalonia-layout-zafiro | avalonia-layout-zafiro | avalonia-layout-zafiro | Creative & Design | skills/avalonia-layout-zafiro | antigravity |
 | avalonia-zafiro-development | avalonia-zafiro-development | avalonia-zafiro-development | Creative & Design | skills/avalonia-zafiro-development | antigravity |
-| brand-guidelines-anthropic | brand-guidelines | brand-guidelines-anthropic | Creative & Design | skills/brand-guidelines-anthropic | antigravity |
 | brand-guidelines-community | brand-guidelines | brand-guidelines-anthropic | Creative & Design | skills/brand-guidelines-community | antigravity |
 | browser-extension-builder | browser-extension-builder | browser-extension-builder | Creative & Design | skills/browser-extension-builder | antigravity |
 | busybox-on-windows | busybox-on-windows | busybox-on-windows | Creative & Design | skills/busybox-on-windows | antigravity |
@@ -579,26 +568,21 @@
 | segment-cdp | segment-cdp | segment-cdp | Integrations & APIs | skills/segment-cdp | antigravity |
 | app-store-optimization | app-store-optimization | app-store-optimization | Maker Tools | skills/app-store-optimization | antigravity |
 | pdf | pdf | pdf-official | Maker Tools | skills/pdf | antigravity |
-| pdf-official | pdf | pdf-official | Maker Tools | skills/pdf-official | antigravity |
 | competitor-alternatives | competitor-alternatives | competitor-alternatives | Marketing & Growth | skills/competitor-alternatives | antigravity |
 | copy-editing | copy-editing | copy-editing | Marketing & Growth | skills/copy-editing | antigravity |
 | docx | docx | docx-official | Marketing & Growth | skills/docx | antigravity |
-| docx-official | docx | docx-official | Marketing & Growth | skills/docx-official | antigravity |
 | file-organizer | file-organizer | file-organizer | Marketing & Growth | skills/file-organizer | antigravity |
 | marketing-ideas | marketing-ideas | marketing-ideas | Marketing & Growth | skills/marketing-ideas | antigravity |
 | marketing-psychology | marketing-psychology | marketing-psychology | Marketing & Growth | skills/marketing-psychology | antigravity |
 | page-cro | page-cro | page-cro | Marketing & Growth | skills/page-cro | antigravity |
 | pptx | pptx | pptx-official | Marketing & Growth | skills/pptx | antigravity |
-| pptx-official | pptx | pptx-official | Marketing & Growth | skills/pptx-official | antigravity |
 | pricing-strategy | pricing-strategy | pricing-strategy | Marketing & Growth | skills/pricing-strategy | antigravity |
 | schema-markup | schema-markup | schema-markup | Marketing & Growth | skills/schema-markup | antigravity |
 | seo-fundamentals | seo-fundamentals | seo-fundamentals | Marketing & Growth | skills/seo-fundamentals | antigravity |
 | signup-flow-cro | signup-flow-cro | signup-flow-cro | Marketing & Growth | skills/signup-flow-cro | antigravity |
 | social-content | social-content | social-content | Marketing & Growth | skills/social-content | antigravity |
 | xlsx | xlsx | xlsx-official | Marketing & Growth | skills/xlsx | antigravity |
-| xlsx-official | xlsx | xlsx-official | Marketing & Growth | skills/xlsx-official | antigravity |
 | internal-comms-anthropic | internal-comms | internal-comms-anthropic | Product & Strategy | skills/internal-comms-anthropic | antigravity |
-| internal-comms-community | internal-comms | internal-comms-anthropic | Product & Strategy | skills/internal-comms-community | antigravity |
 | ab-test-setup | ab-test-setup | ab-test-setup | Testing & QA | skills/ab-test-setup | antigravity |
 | analytics-tracking | analytics-tracking | analytics-tracking | Testing & QA | skills/analytics-tracking | antigravity |
 | aws-penetration-testing | AWS Penetration Testing | aws-penetration-testing | Testing & QA | skills/aws-penetration-testing | antigravity |
@@ -631,16 +615,6 @@
 | executing-plans | executing-plans | executing-plans | Workflow & Planning | skills/executing-plans | antigravity |
 
 </details>
-
-## Quality Notes
-
-- Weak description for typescript-expert: ">-"
-- Duplicate frontmatter name `brand-guidelines` in: brand-guidelines-anthropic, brand-guidelines-community
-- Duplicate frontmatter name `pdf` in: pdf, pdf-official
-- Duplicate frontmatter name `docx` in: docx, docx-official
-- Duplicate frontmatter name `pptx` in: pptx, pptx-official
-- Duplicate frontmatter name `xlsx` in: xlsx, xlsx-official
-- Duplicate frontmatter name `internal-comms` in: internal-comms-anthropic, internal-comms-community
 
 ## Sources
 
