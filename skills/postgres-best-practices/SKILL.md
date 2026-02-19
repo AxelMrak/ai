@@ -1,3 +1,8 @@
+---
+name: postgres-best-practices
+description: Postgres performance, schema, and operations best practices.
+---
+
 # POSTGRES-BEST-PRACTICES
 > Generated: 2026-02-17
 > Rules: 33 across 8 modules

@@ -1,3 +1,8 @@
+---
+name: remotion-best-practices
+description: Best practices for building video compositions with Remotion.
+---
+
 # REMOTION-BEST-PRACTICES
 > Generated: 2026-02-17
 > Rules: 28 across 25 modules

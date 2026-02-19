@@ -3,6 +3,23 @@ import { join } from "path"
 
 const SKILLS_ROOT = join(import.meta.dir, "..")
 
+interface CliOptions {
+  overwriteSkillMd: boolean
+  only: string | null
+}
+
+function parseArgs(argv: string[]): CliOptions {
+  let overwriteSkillMd = false
+  let only: string | null = null
+
+  for (const arg of argv) {
+    if (arg === "--overwrite-skill-md") overwriteSkillMd = true
+    if (arg.startsWith("--only=")) only = arg.slice("--only=".length)
+  }
+
+  return { overwriteSkillMd, only }
+}
+
 function formatRule(content: string, filename: string): string {
   const titleMatch = content.match(/title:\s*(.*)/)
   const title = titleMatch ? titleMatch[1].trim() : filename.replace(".md", "")
@@ -10,8 +27,19 @@ function formatRule(content: string, filename: string): string {
   return `\n### RULE: ${title}\n(File: ${filename})\n\n${body}\n`
 }
 
-async function buildSkillSet(skillName: string) {
-  const rulesDir = join(SKILLS_ROOT, skillName, "rules")
+async function shouldWriteSkillMd(skillDir: string, overwriteSkillMd: boolean): Promise<boolean> {
+  const skillMdPath = join(skillDir, "SKILL.md")
+  try {
+    await stat(skillMdPath)
+    return overwriteSkillMd
+  } catch {
+    return true
+  }
+}
+
+async function buildSkillSet(skillName: string, options: CliOptions) {
+  const skillDir = join(SKILLS_ROOT, skillName)
+  const rulesDir = join(skillDir, "rules")
 
   try {
     const stats = await stat(rulesDir)
@@ -26,7 +54,7 @@ async function buildSkillSet(skillName: string) {
   const mdFiles = files.filter((f) => f.endsWith(".md")).sort()
 
   if (mdFiles.length === 0) {
-    console.log(`  No rules found`)
+    console.log("  No rules found")
     return
   }
 
@@ -49,43 +77,56 @@ async function buildSkillSet(skillName: string) {
       output += formatRule(content, filename)
     }
 
-    const outputFile = join(SKILLS_ROOT, skillName, `${prefix}-rules.md`)
+    const outputFile = join(skillDir, `${prefix}-rules.md`)
     await Bun.write(outputFile, output)
     console.log(`  Created ${prefix}-rules.md`)
   }
 
-  const validGroups = Object.keys(groups).filter(
-    (g) => !g.startsWith("_") || g === "_custom"
-  )
-  
+  const canWriteSkillMd = await shouldWriteSkillMd(skillDir, options.overwriteSkillMd)
+  if (!canWriteSkillMd) {
+    console.log("  Preserved existing SKILL.md (use --overwrite-skill-md to replace)")
+    return
+  }
+
+  const validGroups = Object.keys(groups).filter((g) => !g.startsWith("_") || g === "_custom")
   let mainOutput = `# ${skillName.toUpperCase()}\n`
   mainOutput += `> Generated: ${new Date().toISOString().split("T")[0]}\n`
   mainOutput += `> Rules: ${mdFiles.length} across ${validGroups.length} modules\n\n`
-  mainOutput += `## Modules\n\n`
-  
+  mainOutput += "## Modules\n\n"
+
   for (const [prefix, groupFiles] of Object.entries(groups)) {
     if (prefix.startsWith("_") && prefix !== "_custom") continue
     const displayName = prefix === "_custom" ? "custom (user-taught)" : `${prefix}-rules.md`
     mainOutput += `- **${displayName}**: ${groupFiles.length} rules\n`
   }
 
-  await Bun.write(join(SKILLS_ROOT, skillName, "SKILL.md"), mainOutput)
-  console.log(`  Created SKILL.md`)
+  await Bun.write(join(skillDir, "SKILL.md"), mainOutput)
+  console.log("  Created SKILL.md")
 }
 
-console.log("Building skills...\n")
+async function main() {
+  const options = parseArgs(process.argv.slice(2))
 
-const folders = await readdir(SKILLS_ROOT)
-for (const folder of folders) {
-  if (folder.startsWith("_") || folder.startsWith(".")) continue
-  
-  const folderPath = join(SKILLS_ROOT, folder)
-  try {
-    const stats = await stat(folderPath)
-    if (stats.isDirectory()) {
-      await buildSkillSet(folder)
+  console.log("Building skills...\n")
+  if (!options.overwriteSkillMd) {
+    console.log("Safe mode: existing SKILL.md files are preserved.\n")
+  }
+
+  const folders = await readdir(SKILLS_ROOT)
+  for (const folder of folders) {
+    if (folder.startsWith("_") || folder.startsWith(".")) continue
+    if (options.only && folder !== options.only) continue
+
+    const folderPath = join(SKILLS_ROOT, folder)
+    try {
+      const stats = await stat(folderPath)
+      if (stats.isDirectory()) await buildSkillSet(folder, options)
+    } catch {
+      continue
     }
-  } catch {}
+  }
+
+  console.log("\nDone.")
 }
 
-console.log("\nDone.")
+main().catch(console.error)

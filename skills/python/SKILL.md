@@ -1,3 +1,8 @@
+---
+name: python
+description: Python coding rules and references for common development workflows.
+---
+
 # PYTHON
 > Generated: 2026-02-17
 > Rules: 2 across 2 modules

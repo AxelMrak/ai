@@ -1,0 +1,29 @@
+{
+  "_comment": "Canonical resolution for duplicated frontmatter names.",
+  "by_name": {
+    "brand-guidelines": {
+      "preferred": "brand-guidelines-anthropic",
+      "aliases": ["brand-guidelines-community"]
+    },
+    "docx": {
+      "preferred": "docx-official",
+      "aliases": ["docx"]
+    },
+    "internal-comms": {
+      "preferred": "internal-comms-anthropic",
+      "aliases": ["internal-comms-community"]
+    },
+    "pdf": {
+      "preferred": "pdf-official",
+      "aliases": ["pdf"]
+    },
+    "pptx": {
+      "preferred": "pptx-official",
+      "aliases": ["pptx"]
+    },
+    "xlsx": {
+      "preferred": "xlsx-official",
+      "aliases": ["xlsx"]
+    }
+  }
+}

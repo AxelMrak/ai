@@ -1,3 +1,8 @@
+---
+name: react-best-practices
+description: React and Next.js performance and architecture best practices.
+---
+
 # REACT-BEST-PRACTICES
 > Generated: 2026-02-17
 > Rules: 59 across 8 modules

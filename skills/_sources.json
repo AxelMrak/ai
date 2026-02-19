@@ -1,88 +1,124 @@
 {
   "$schema": "./sources.schema.json",
   "_comment": "External skill sources. Run 'bun run skills/_scripts/sync-external.ts' to update.",
-  "_note": "antigravity skills (240+) are bulk-copied, not synced individually. See SKILL-INDEX.md for full list.",
+  "_note": "antigravity skills (240+) are bulk-copied, not synced individually. See skills/SKILL-INDEX.md for full list.",
+  "registry": {
+    "schema_version": "1.1.0",
+    "source_of_truth": "skills/SKILL-INDEX.md",
+    "generated_index": "skills/SKILL-INDEX.md"
+  },
+  "defaults": {
+    "cleanup": true,
+    "trusted": false
+  },
   "sources": {
     "frontend-design": {
       "repo": "anthropics/skills",
       "path": "skills/frontend-design",
-      "branch": "main"
+      "branch": "main",
+      "trusted": true,
+      "last_verified": "2026-02-17"
     },
     "skill-creator": {
       "repo": "anthropics/skills",
       "path": "skills/skill-creator",
-      "branch": "main"
+      "branch": "main",
+      "trusted": true,
+      "last_verified": "2026-02-17"
     },
     "webapp-testing": {
       "repo": "anthropics/skills",
       "path": "skills/webapp-testing",
-      "branch": "main"
+      "branch": "main",
+      "trusted": true,
+      "last_verified": "2026-02-17"
     },
     "react-best-practices": {
       "repo": "vercel-labs/agent-skills",
       "path": "skills/react-best-practices",
       "branch": "main",
-      "preserve": ["rules/_custom-*.md"]
+      "preserve": ["rules/_custom-*.md"],
+      "trusted": true,
+      "last_verified": "2026-02-17"
     },
     "web-design-guidelines": {
       "repo": "vercel-labs/agent-skills",
       "path": "skills/web-design-guidelines",
-      "branch": "main"
+      "branch": "main",
+      "trusted": true,
+      "last_verified": "2026-02-17"
     },
     "agent-browser": {
       "repo": "vercel-labs/agent-browser",
       "path": "skills/agent-browser",
-      "branch": "main"
+      "branch": "main",
+      "trusted": true,
+      "last_verified": "2026-02-17"
     },
     "vercel-composition-patterns": {
       "repo": "vercel-labs/agent-skills",
       "path": "skills/composition-patterns",
-      "branch": "main"
+      "branch": "main",
+      "trusted": true,
+      "last_verified": "2026-02-17"
     },
     "vercel-react-native-skills": {
       "repo": "vercel-labs/agent-skills",
       "path": "skills/react-native-skills",
-      "branch": "main"
+      "branch": "main",
+      "trusted": true,
+      "last_verified": "2026-02-17"
     },
     "browser-use": {
       "repo": "browser-use/browser-use",
       "path": "skills/browser-use",
-      "branch": "main"
+      "branch": "main",
+      "last_verified": "2026-02-17"
     },
     "chatgpt-app-builder": {
       "repo": "mcp-use/mcp-use",
       "path": "skills/chatgpt-app-builder",
-      "branch": "main"
+      "branch": "main",
+      "last_verified": "2026-02-17"
     },
     "just-scrape": {
       "repo": "ScrapeGraphAI/just-scrape",
       "path": "skills/just-scrape",
-      "branch": "main"
+      "branch": "main",
+      "last_verified": "2026-02-17"
     },
     "next-best-practices": {
       "repo": "vercel-labs/next-skills",
       "path": "skills/next-best-practices",
-      "branch": "main"
+      "branch": "main",
+      "trusted": true,
+      "last_verified": "2026-02-17"
     },
     "audit-website": {
       "repo": "squirrelscan/skills",
       "path": "audit-website",
-      "branch": "main"
+      "branch": "main",
+      "last_verified": "2026-02-17"
     },
     "supabase-postgres-best-practices": {
       "repo": "supabase/agent-skills",
       "path": "skills/supabase-postgres-best-practices",
-      "branch": "main"
+      "branch": "main",
+      "trusted": true,
+      "last_verified": "2026-02-17"
     },
     "mercadopago-integration": {
       "repo": "martinacostadev/mercadopago-integration",
       "path": "mercadopago-integration",
-      "branch": "master"
+      "branch": "master",
+      "last_verified": "2026-02-17"
     },
     "find-skills": {
       "repo": "vercel-labs/skills",
       "path": "find-skills",
-      "branch": "main"
+      "branch": "main",
+      "trusted": true,
+      "last_verified": "2026-02-17"
     }
   },
   "bulk_sources": {

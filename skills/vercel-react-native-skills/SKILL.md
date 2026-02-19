@@ -1,3 +1,8 @@
+---
+name: vercel-react-native-skills
+description: React Native performance and architecture guidelines from Vercel patterns.
+---
+
 # VERCEL-REACT-NATIVE-SKILLS
 > Generated: 2026-02-17
 > Rules: 38 across 13 modules

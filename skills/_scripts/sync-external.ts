@@ -9,10 +9,18 @@ interface SkillSource {
   repo: string
   path: string
   branch: string
+  pinned_ref?: string
   preserve?: string[]
+  cleanup?: boolean
+  trusted?: boolean
+  last_verified?: string
 }
 
 interface SourcesConfig {
+  defaults?: {
+    cleanup?: boolean
+    trusted?: boolean
+  }
   sources: Record<string, SkillSource>
 }
 
@@ -23,12 +31,19 @@ interface GitHubContent {
   download_url: string | null
 }
 
+interface SyncResult {
+  added: number
+  updated: number
+  preserved: number
+  removed: number
+}
+
 async function loadSources(): Promise<SourcesConfig> {
   return await Bun.file(SOURCES_FILE).json()
 }
 
-async function fetchGitHubContents(repo: string, path: string, branch: string): Promise<GitHubContent[]> {
-  const url = `${GITHUB_API}/repos/${repo}/contents/${path}?ref=${branch}`
+async function fetchGitHubContents(repo: string, path: string, ref: string): Promise<GitHubContent[]> {
+  const url = `${GITHUB_API}/repos/${repo}/contents/${path}?ref=${ref}`
   const response = await fetch(url, {
     headers: {
       Accept: "application/vnd.github.v3+json",
@@ -36,18 +51,13 @@ async function fetchGitHubContents(repo: string, path: string, branch: string): 
     },
   })
 
-  if (!response.ok) {
-    throw new Error(`GitHub API error: ${response.status}`)
-  }
-
+  if (!response.ok) throw new Error(`GitHub API error: ${response.status}`)
   return await response.json()
 }
 
 async function fetchFile(url: string): Promise<string> {
   const response = await fetch(url)
-  if (!response.ok) {
-    throw new Error(`Failed to fetch: ${url}`)
-  }
+  if (!response.ok) throw new Error(`Failed to fetch: ${url}`)
   return await response.text()
 }
 
@@ -62,8 +72,14 @@ async function getExistingFiles(dir: string): Promise<Set<string>> {
   const files = new Set<string>()
   try {
     const entries = await readdir(dir, { recursive: true })
-    entries.forEach((e) => files.add(e))
-  } catch {}
+    for (const entry of entries) {
+      const entryPath = join(dir, entry)
+      const entryStat = await stat(entryPath)
+      if (entryStat.isFile()) files.add(entry)
+    }
+  } catch {
+    return files
+  }
   return files
 }
 
@@ -71,26 +87,33 @@ async function syncDirectory(
   repo: string,
   remotePath: string,
   localPath: string,
-  branch: string,
+  ref: string,
   preserve: string[],
   existingFiles: Set<string>,
+  syncedFiles: Set<string>,
   relativePath = ""
-): Promise<{ added: number; updated: number; preserved: number }> {
-  const result = { added: 0, updated: 0, preserved: 0 }
+): Promise<SyncResult> {
+  const result: SyncResult = { added: 0, updated: 0, preserved: 0, removed: 0 }
 
   await mkdir(localPath, { recursive: true })
-  const contents = await fetchGitHubContents(repo, remotePath, branch)
+  const contents = await fetchGitHubContents(repo, remotePath, ref)
 
   for (const item of contents) {
     const localItemPath = join(localPath, item.name)
     const relativeItemPath = relativePath ? `${relativePath}/${item.name}` : item.name
 
     if (item.type === "dir") {
-      const sub = await syncDirectory(repo, item.path, localItemPath, branch, preserve, existingFiles, relativeItemPath)
+      const sub = await syncDirectory(repo, item.path, localItemPath, ref, preserve, existingFiles, syncedFiles, relativeItemPath)
       result.added += sub.added
       result.updated += sub.updated
       result.preserved += sub.preserved
-    } else if (item.type === "file" && item.download_url) {
+      result.removed += sub.removed
+      continue
+    }
+
+    if (item.type === "file" && item.download_url) {
+      syncedFiles.add(relativeItemPath)
+
       if (matchesPattern(relativeItemPath, preserve)) {
         result.preserved++
         continue
@@ -98,28 +121,54 @@ async function syncDirectory(
 
       const content = await fetchFile(item.download_url)
       const exists = existingFiles.has(relativeItemPath)
-
       await Bun.write(localItemPath, content)
-      exists ? result.updated++ : result.added++
+
+      if (exists) result.updated++
+      else result.added++
     }
   }
 
   return result
 }
 
-async function syncSkill(skillName: string, source: SkillSource): Promise<void> {
+async function removeStaleFiles(skillDir: string, preserve: string[], existingFiles: Set<string>, syncedFiles: Set<string>): Promise<number> {
+  let removed = 0
+  for (const file of existingFiles) {
+    if (syncedFiles.has(file)) continue
+    if (matchesPattern(file, preserve)) continue
+
+    await rm(join(skillDir, file), { force: true })
+    removed++
+  }
+  return removed
+}
+
+async function syncSkill(skillName: string, source: SkillSource, defaults: SourcesConfig["defaults"]): Promise<void> {
   const skillDir = join(SKILLS_ROOT, skillName)
   const preserve = source.preserve || []
+  const ref = source.pinned_ref || source.branch
+  const cleanup = source.cleanup ?? defaults?.cleanup ?? true
 
-  console.log(`\nSyncing ${skillName} from ${source.repo}...`)
+  console.log(`\nSyncing ${skillName} from ${source.repo}@${ref}...`)
+  if (!source.trusted && !(defaults?.trusted ?? false)) {
+    console.log("  Warning: untrusted source, review changes after sync")
+  }
 
   const existingFiles = await getExistingFiles(skillDir)
-  const result = await syncDirectory(source.repo, source.path, skillDir, source.branch, preserve, existingFiles)
+  const syncedFiles = new Set<string>()
+
+  const result = await syncDirectory(source.repo, source.path, skillDir, ref, preserve, existingFiles, syncedFiles)
+  if (cleanup) {
+    result.removed = await removeStaleFiles(skillDir, preserve, existingFiles, syncedFiles)
+  }
 
   if (result.added > 0) console.log(`  Added: ${result.added} files`)
   if (result.updated > 0) console.log(`  Updated: ${result.updated} files`)
+  if (result.removed > 0) console.log(`  Removed stale: ${result.removed} files`)
   if (result.preserved > 0) console.log(`  Preserved: ${result.preserved} custom files`)
-  if (result.added === 0 && result.updated === 0) console.log(`  Already up to date`)
+  if (result.added === 0 && result.updated === 0 && result.removed === 0) {
+    console.log("  Already up to date")
+  }
 }
 
 async function main() {
@@ -129,17 +178,18 @@ async function main() {
   const skills = Object.keys(config.sources)
 
   console.log(`\nFound ${skills.length} sources:`)
-  skills.forEach((name) => console.log(`  - ${name}`))
+  for (const name of skills) console.log(`  - ${name}`)
 
   for (const [name, source] of Object.entries(config.sources)) {
     try {
-      await syncSkill(name, source)
+      await syncSkill(name, source, config.defaults)
     } catch (error) {
       console.error(`  Failed: ${error instanceof Error ? error.message : error}`)
     }
   }
 
-  console.log("\nDone. Run build.ts to rebuild SKILL.md files.")
+  console.log("\nDone.")
+  console.log("Next: bun run skills/_scripts/validate-skills.ts && bun run skills/_scripts/generate-index.ts")
 }
 
 main().catch(console.error)

@@ -1,3 +1,8 @@
+---
+name: vercel-composition-patterns
+description: React composition patterns for flexible and maintainable components.
+---
+
 # VERCEL-COMPOSITION-PATTERNS
 > Generated: 2026-02-17
 > Rules: 10 across 4 modules

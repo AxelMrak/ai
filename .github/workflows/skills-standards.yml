@@ -1,0 +1,35 @@
+name: Skills Standards
+
+on:
+  pull_request:
+    paths:
+      - "skills/**"
+      - "AGENTS.md"
+      - ".ai/SKILL-INDEX.md"
+  push:
+    branches:
+      - main
+    paths:
+      - "skills/**"
+      - "AGENTS.md"
+      - ".ai/SKILL-INDEX.md"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Validate skills registry
+        run: bun run skills/_scripts/validate-skills.ts --strict
+
+      - name: Regenerate index (strict)
+        run: bun run skills/_scripts/generate-index.ts --strict
+
+      - name: Enforce committed index
+        run: git diff --exit-code -- skills/SKILL-INDEX.md

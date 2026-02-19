@@ -1,3 +1,8 @@
+---
+name: react
+description: React development rules for async, rendering, and bundle performance.
+---
+
 # REACT
 > Generated: 2026-02-17
 > Rules: 49 across 8 modules
